@@ -2,181 +2,166 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { GuestOverlay } from '@/components/GuestOverlay';
 import { 
-  Monitor, 
-  Play, 
-  Power, 
-  RefreshCw, 
-  Plus,
-  Wifi,
-  WifiOff,
-  Settings,
-  Eye
+  Smartphone,
+  Cpu,
+  HardDrive,
+  Wifi
 } from 'lucide-react';
 
-interface Device {
-  id: number;
-  name: string;
-  status: 'online' | 'offline';
-  ip: string;
-  uptime: string;
-}
-
-const devices: Device[] = [
-  { id: 1, name: 'Device-001', status: 'online', ip: '192.168.1.101', uptime: '12h 34m' },
-  { id: 2, name: 'Device-002', status: 'online', ip: '192.168.1.102', uptime: '8h 15m' },
-  { id: 3, name: 'Device-003', status: 'offline', ip: '192.168.1.103', uptime: '—' },
-  { id: 4, name: 'Device-004', status: 'online', ip: '192.168.1.104', uptime: '2h 45m' },
+const mockPhoneSpecs = [
+  { label: 'Модель', value: 'Samsung Galaxy S23' },
+  { label: 'Android', value: '14.0' },
+  { label: 'CPU', value: 'Snapdragon 8 Gen 2' },
+  { label: 'RAM', value: '8 GB' },
+  { label: 'Хранилище', value: '256 GB' },
+  { label: 'IMEI', value: '35x-xxx-xxx-xxx-xx3' },
+  { label: 'IP', value: '192.168.1.xxx' },
+  { label: 'Статус', value: 'В разработке' },
 ];
 
 export const EmulatorPage: React.FC = () => {
   const { user, onOpenAuth } = useLayoutContext();
 
-  if (!user) {
-    return (
-      <Card className="bg-gray-800/50 border-gray-700">
-        <CardContent className="py-16 text-center">
-          <div className="text-6xl mb-4">🔒</div>
-          <h3 className="text-xl font-semibold text-white mb-2">Доступ ограничен</h3>
-          <p className="text-gray-400 mb-6">
-            Для доступа к эмулятору необходимо авторизоваться
-          </p>
-          <Button onClick={onOpenAuth} className="gradient-telegram">
-            Войти через Telegram
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+    <div className="relative min-h-full">
+      {!user && <GuestOverlay onOpenAuth={onOpenAuth} />}
+
+      <motion.div 
+        className="space-y-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
       >
-        <Card className="bg-gradient-to-br from-gray-800/80 to-gray-900/60 border-gray-700">
-          <CardHeader>
-            <CardTitle className="text-xl text-white flex items-center gap-3">
-              <Monitor className="w-6 h-6 text-primary" />
-              Эмулятор управления
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-400">
-              Удалённое управление виртуальными устройствами
-            </p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Actions */}
-      <div className="flex gap-3 flex-wrap">
-        <Button className="bg-green-600 hover:bg-green-700 text-white">
-          <Play className="w-4 h-4 mr-2" />
-          Запустить все
-        </Button>
-        <Button variant="outline" className="border-gray-600 text-gray-300">
-          <Power className="w-4 h-4 mr-2" />
-          Остановить все
-        </Button>
-        <Button variant="outline" className="border-gray-600 text-gray-300">
-          <RefreshCw className="w-4 h-4 mr-2" />
-          Перезапуск
-        </Button>
-        <Button variant="outline" className="border-gray-600 text-gray-300">
-          <Plus className="w-4 h-4 mr-2" />
-          Добавить устройство
-        </Button>
-      </div>
-
-      {/* Devices Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {devices.map((device, index) => (
-          <motion.div
-            key={device.id}
-            initial={{ opacity: 0, y: 20 }}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Phone Mockup - Center */}
+          <motion.div 
+            className="lg:col-span-2 flex items-center justify-center"
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <Card className="bg-gray-800/50 border-gray-700 hover:border-gray-600 transition-colors">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base text-white flex items-center gap-2">
-                    {device.status === 'online' ? (
-                      <Wifi className="w-4 h-4 text-green-400" />
-                    ) : (
-                      <WifiOff className="w-4 h-4 text-red-400" />
-                    )}
-                    {device.name}
-                  </CardTitle>
-                  <Badge className={device.status === 'online' 
-                    ? 'bg-green-600/20 text-green-400 border-green-700' 
-                    : 'bg-red-600/20 text-red-400 border-red-700'
-                  }>
-                    {device.status === 'online' ? 'В сети' : 'Офлайн'}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-400">IP адрес</p>
-                    <p className="text-white font-mono">{device.ip}</p>
+            <div className="relative">
+              {/* Phone Frame */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="relative"
+              >
+                {/* Phone body */}
+                <div className="w-[280px] h-[560px] bg-black rounded-[40px] border-4 border-gray-800 shadow-2xl overflow-hidden relative">
+                  {/* Notch */}
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-10" />
+                  
+                  {/* Screen */}
+                  <div className="absolute inset-2 bg-black rounded-[32px] flex flex-col items-center justify-center">
+                    {/* Floating animation for content */}
+                    <motion.div
+                      animate={{ y: [0, -10, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      className="text-center"
+                    >
+                      <motion.div
+                        animate={{ rotate: [0, 5, -5, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Smartphone className="w-16 h-16 text-primary/50 mx-auto mb-4" />
+                      </motion.div>
+                      <h3 className="text-xl font-bold text-white mb-2">Эмулятор</h3>
+                      <p className="text-primary text-lg">в разработке</p>
+                    </motion.div>
+                    
+                    {/* Decorative grid */}
+                    <div className="absolute inset-0 opacity-5">
+                      <div className="w-full h-full" style={{
+                        backgroundImage: 'linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)',
+                        backgroundSize: '20px 20px'
+                      }} />
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-gray-400">Uptime</p>
-                    <p className="text-white">{device.uptime}</p>
-                  </div>
+                  
+                  {/* Home button indicator */}
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-gray-600 rounded-full" />
                 </div>
                 
-                <div className="aspect-video bg-gray-900/50 rounded-lg border border-gray-700 flex items-center justify-center">
-                  {device.status === 'online' ? (
-                    <div className="text-center">
-                      <Monitor className="w-12 h-12 text-gray-500 mx-auto mb-2" />
-                      <p className="text-sm text-gray-400">Экран устройства</p>
-                    </div>
-                  ) : (
-                    <p className="text-gray-500">Устройство офлайн</p>
-                  )}
-                </div>
+                {/* Glow effect */}
+                <div className="absolute inset-0 -z-10 blur-3xl opacity-20 bg-primary rounded-full scale-75" />
+              </motion.div>
 
-                <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1 border-gray-600 text-gray-300"
-                    disabled={device.status === 'offline'}
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    Просмотр
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1 border-gray-600 text-gray-300"
-                    disabled={device.status === 'offline'}
-                  >
-                    <Settings className="w-4 h-4 mr-1" />
-                    Настройки
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="border-gray-600 text-gray-300"
-                  >
-                    {device.status === 'online' ? <Power className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                  </Button>
+              {/* Status text below phone */}
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-center mt-6 text-muted-foreground"
+              >
+                Удалённое управление эмулятором Android
+              </motion.p>
+            </div>
+          </motion.div>
+
+          {/* Specs Table - Right Bottom */}
+          <motion.div 
+            className="flex items-end"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <Card className="bg-black/30 border border-white/20 backdrop-blur-sm w-full">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-foreground flex items-center gap-2">
+                  <Cpu className="w-4 h-4 text-primary" />
+                  Характеристики устройства
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {mockPhoneSpecs.map((spec, index) => (
+                    <motion.div
+                      key={spec.label}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + index * 0.05, duration: 0.3 }}
+                      className="flex justify-between items-center py-2 border-b border-white/5 last:border-0"
+                    >
+                      <span className="text-xs text-muted-foreground">{spec.label}</span>
+                      <span className="text-xs text-foreground font-mono">{spec.value}</span>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                {/* Status indicators */}
+                <div className="mt-4 pt-4 border-t border-white/10 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Wifi className="w-4 h-4 text-green-400" />
+                    <span className="text-xs text-muted-foreground">Подключение стабильно</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <HardDrive className="w-4 h-4 text-yellow-400" />
+                    <span className="text-xs text-muted-foreground">Функция в разработке</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
-        ))}
-      </div>
+        </div>
+
+        {/* Info Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
+        >
+          <Card className="bg-primary/10 border border-primary/30">
+            <CardContent className="p-4">
+              <p className="text-sm text-primary">
+                🚀 Эмулятор Android позволит удалённо управлять виртуальными устройствами для прогрева аккаунтов. Функционал находится в активной разработке.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

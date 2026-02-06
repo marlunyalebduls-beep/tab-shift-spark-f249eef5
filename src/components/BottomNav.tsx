@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { NavItem } from '@/types/navigation';
 import {
   HomeIcon,
@@ -36,29 +37,39 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   const navigate = useNavigate();
 
   return (
-    <nav
-      className={`md:hidden fixed bottom-0 left-0 right-0 h-[70px] glass-dark border-t border-foreground/[0.08] z-[999] px-1.5 transition-all duration-400 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
-      }`}
+    <motion.nav
+      initial={{ y: 100, opacity: 0 }}
+      animate={{ 
+        y: isVisible ? 0 : 100, 
+        opacity: isVisible ? 1 : 0 
+      }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="md:hidden fixed bottom-0 left-0 right-0 h-[70px] glass-dark border-t border-foreground/[0.08] z-[999] px-1.5"
     >
       <div className="flex justify-around items-center h-full">
-        {bottomNavItems.map((item) => {
+        {bottomNavItems.map((item, index) => {
           const isActive = activeTab === item.id;
           return (
-            <button
+            <motion.button
               key={item.id}
               onClick={() => navigate(item.path)}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + index * 0.05 }}
+              whileTap={{ scale: 0.9 }}
               className={`flex flex-col items-center justify-center flex-1 h-full py-2 px-1.5 min-w-0 transition-all duration-300 ${
                 isActive ? 'text-primary' : 'text-muted-foreground/60'
               }`}
             >
-              <span
-                className={`mb-1 transition-transform duration-300 ${
-                  isActive ? '-translate-y-0.5' : ''
-                }`}
+              <motion.span
+                animate={{ 
+                  y: isActive ? -2 : 0,
+                  scale: isActive ? 1.1 : 1
+                }}
+                className="mb-1"
               >
                 {item.icon}
-              </span>
+              </motion.span>
               <span
                 className={`text-[10px] text-center whitespace-nowrap overflow-hidden text-ellipsis max-w-full transition-all duration-300 ${
                   isActive ? 'font-medium' : 'font-normal'
@@ -66,10 +77,10 @@ export const BottomNav: React.FC<BottomNavProps> = ({
               >
                 {item.label}
               </span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 };

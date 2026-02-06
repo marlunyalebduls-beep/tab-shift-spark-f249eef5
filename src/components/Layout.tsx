@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CanvasBackground } from '@/components/CanvasBackground';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Sidebar } from '@/components/Sidebar';
@@ -76,6 +77,13 @@ const Layout: React.FC = () => {
   const toggleMobileSidebar = () => setIsMobileSidebarOpen(prev => !prev);
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
+  // Page transition variants - using inline for simpler typing
+  const pageTransition = {
+    initial: { opacity: 0, y: 20, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -20, scale: 0.98 }
+  };
+
   return (
     <div className="flex h-full w-full overflow-hidden md:gradient-mobile-bg">
       <LoadingScreen isVisible={isLoading} />
@@ -105,10 +113,27 @@ const Layout: React.FC = () => {
       />
 
       <main className="flex-1 p-5 md:p-[30px] overflow-y-auto z-[5] relative transition-all duration-400 mt-[65px] mb-[70px] md:mt-0 md:mb-0 min-h-[calc(100vh-135px)] md:min-h-0">
-        <h1 className="text-2xl md:text-[28px] font-normal text-foreground mb-4 md:mb-5 transition-all duration-400">
+        <motion.h1 
+          key={`title-${activeTab}`}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-2xl md:text-[28px] font-normal text-foreground mb-4 md:mb-5"
+        >
           {title}
-        </h1>
-        <Outlet context={{ user, onOpenAuth: openAuthModal }} />
+        </motion.h1>
+        
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={pageTransition.initial}
+            animate={pageTransition.animate}
+            exit={pageTransition.exit}
+            transition={{ duration: 0.3 }}
+          >
+            <Outlet context={{ user, onOpenAuth: openAuthModal }} />
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <BottomNav
