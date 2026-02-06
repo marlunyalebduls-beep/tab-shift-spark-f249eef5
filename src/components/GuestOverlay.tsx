@@ -19,8 +19,8 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6">
-        {/* Square container with shaking lock inside */}
-        <div className="w-24 h-24 rounded-2xl bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
+        {/* Circle container with bouncing lock inside */}
+        <div className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
           <motion.div
             animate={{ 
               y: [0, -8, 0, -4, 0],
