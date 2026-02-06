@@ -93,13 +93,9 @@ export const AccountsPage: React.FC = () => {
   };
 
   const stats = [
-    { label: 'Всего', value: mockAccounts.length, icon: Users, color: 'text-blue-400', bgColor: 'bg-blue-500/20' },
-    { label: 'Готовы', value: mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length, icon: CheckCircle, color: 'text-green-400', bgColor: 'bg-green-500/20' },
-  ];
-
-  const statusCards = [
-    { label: 'Готовы к заказу', value: mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length, color: 'text-green-400', bgColor: 'bg-green-500/20', borderColor: 'border-green-500/50' },
-    { label: 'Догрев', value: mockAccounts.filter(acc => acc.emulation_status.includes('Предварительный') || acc.emulation_status.includes('ГЕО')).length, color: 'text-yellow-400', bgColor: 'bg-yellow-500/20', borderColor: 'border-yellow-500/50' },
+    { label: 'Всего', value: mockAccounts.length, icon: Users, color: 'text-blue-400' },
+    { label: 'Готовы', value: mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length, icon: CheckCircle, color: 'text-green-400' },
+    { label: 'Догрев', value: mockAccounts.filter(acc => acc.emulation_status.includes('Предварительный') || acc.emulation_status.includes('ГЕО')).length, icon: Zap, color: 'text-yellow-400' },
   ];
 
   const activeFilters = useMemo(() => {
@@ -139,14 +135,8 @@ export const AccountsPage: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      {/* Header */}
-      <div className="mb-2">
-        <h2 className="text-2xl font-bold text-foreground">Аккаунты</h2>
-        <p className="text-sm text-muted-foreground">Выберите подходящий аккаунт для заказа</p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Stats Row - Non-clickable */}
+      <div className="grid grid-cols-3 gap-4">
         {stats.map((stat, index) => (
           <motion.div 
             key={stat.label}
@@ -154,46 +144,88 @@ export const AccountsPage: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: index * 0.1, duration: 0.4 }}
           >
-            <Card className={`${stat.bgColor} border border-white/20 backdrop-blur-sm`}>
+            <Card className="bg-black/40 border border-white/10 backdrop-blur-sm">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs text-muted-foreground">{stat.label}</p>
-                    <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                    <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
                   </div>
-                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
-        
-        {/* Status Cards */}
-        {statusCards.map((card, index) => (
-          <motion.div 
-            key={card.label}
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: (stats.length + index) * 0.1, duration: 0.4 }}
-          >
-            <Card className={`${card.bgColor} border ${card.borderColor} backdrop-blur-sm`}>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-muted-foreground">{card.label}</p>
-                    <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
-                  </div>
-                  {card.label === 'Готовы к заказу' ? (
-                    <CheckCircle className={`w-6 h-6 ${card.color}`} />
-                  ) : (
-                    <Zap className={`w-6 h-6 ${card.color}`} />
-                  )}
+                  <stat.icon className={`w-10 h-10 ${stat.color}`} />
                 </div>
               </CardContent>
             </Card>
           </motion.div>
         ))}
       </div>
+
+      {/* Category Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Готовы к заказу */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+        >
+          <Card className="bg-black/40 border border-white/10 backdrop-blur-sm relative overflow-hidden">
+            <div className="absolute top-2 right-2 px-2 py-1 bg-green-500/20 border border-green-500/50 rounded text-xs text-green-400 font-medium">
+              рекомендуется
+            </div>
+            <CardContent className="p-5">
+              <div className="flex items-start gap-4">
+                <CheckCircle className="w-10 h-10 text-green-400 flex-shrink-0" />
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">Готовы к заказу</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Аккаунты для быстрого старта, готовы к заказу</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Догрев */}
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.4, duration: 0.4 }}
+        >
+          <Card className="bg-black/40 border border-white/10 backdrop-blur-sm">
+            <CardContent className="p-5">
+              <div className="flex items-start gap-4">
+                <Zap className="w-10 h-10 text-yellow-400 flex-shrink-0" />
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">Догрев</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Аккаунты для догрева с целью получения большего лимита</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Action Buttons */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.4 }}
+        className="flex flex-wrap gap-4"
+      >
+        <Button 
+          onClick={() => setShowReadyOnly(true)}
+          className="bg-green-600 hover:bg-green-700 text-white"
+        >
+          <CheckCircle className="w-4 h-4 mr-2" />
+          Показать готовые
+        </Button>
+        <Button 
+          onClick={() => setShowReadyOnly(false)}
+          variant="outline"
+          className="border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20"
+        >
+          <Zap className="w-4 h-4 mr-2" />
+          Показать на догреве
+        </Button>
+      </motion.div>
 
       {/* Active Filters */}
       <AnimatePresence>
