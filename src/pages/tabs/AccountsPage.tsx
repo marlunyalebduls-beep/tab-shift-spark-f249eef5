@@ -51,30 +51,56 @@ const formatSplit = (value: number) => `${(value / 1000).toFixed(0)}K`;
 
 const tutorialSteps = [
   {
-    title: 'Добро пожаловать!',
-    description: 'Это раздел "Аккаунты" — здесь вы можете выбрать и приобрести аккаунты для заказа товара.',
-    highlight: 'header'
+    title: 'Добро пожаловать в раздел Аккаунты!',
+    description: 'Здесь вы можете выбрать и приобрести аккаунты для заказа товара. Давайте познакомимся с интерфейсом.',
+    highlight: 'none',
+    icon: '👋'
   },
   {
-    title: 'Быстрый старт',
-    description: 'Аккаунты "Готовы к заказу" — это аккаунты, которые уже прошли прогрев и готовы к использованию прямо сейчас.',
-    highlight: 'ready'
+    title: 'Статистика аккаунтов',
+    description: 'В верхней части страницы отображается общая статистика: количество всех аккаунтов, готовых к заказу и находящихся на догреве.',
+    highlight: 'stats',
+    icon: '📊'
   },
   {
-    title: 'Догрев',
-    description: 'Аккаунты "Догрев" — это аккаунты, которые находятся в процессе прогрева для получения большего лимита.',
-    highlight: 'warmup'
+    title: 'Быстрый старт — Готовые аккаунты',
+    description: 'Зелёная карточка "Готовы к заказу" показывает аккаунты, которые уже прошли прогрев. Их можно использовать прямо сейчас!',
+    highlight: 'ready',
+    icon: '✅'
   },
   {
-    title: 'Фильтры',
-    description: 'Используйте фильтры для поиска аккаунтов по городу, статусу или сортировке по сплиту.',
-    highlight: 'filters'
+    title: 'Догрев аккаунтов',
+    description: 'Жёлтая карточка "Догрев" показывает аккаунты в процессе подготовки. Они получат больший лимит после завершения.',
+    highlight: 'warmup',
+    icon: '🔥'
   },
   {
-    title: 'Выбор аккаунтов',
-    description: 'Кликните на карточку аккаунта, чтобы выбрать его для покупки. Выбранные аккаунты отображаются в панели покупки.',
-    highlight: 'accounts'
+    title: 'Активные фильтры',
+    description: 'Здесь отображаются все применённые фильтры. Статус всегда виден первым, остальные фильтры можно удалить.',
+    highlight: 'activeFilters',
+    icon: '🏷️'
+  },
+  {
+    title: 'Панель фильтрации',
+    description: 'Используйте поиск, выбор города и сортировку по сплиту для быстрого поиска нужного аккаунта.',
+    highlight: 'filters',
+    icon: '🔍'
+  },
+  {
+    title: 'Выбор и покупка',
+    description: 'Кликните на карточку аккаунта, чтобы добавить его в корзину. Выбранные аккаунты появятся в панели покупки сверху.',
+    highlight: 'accounts',
+    icon: '🛒'
   }
+];
+
+const glossaryItems = [
+  { term: 'Аккаунт', definition: 'Учетная запись на маркетплейсе, используемая для заказа товаров.', icon: '👤', color: 'text-blue-400' },
+  { term: 'SPLIT (Сплит)', definition: 'Максимальный лимит суммы заказа на аккаунте. Чем выше сплит — тем дороже товары можно заказывать.', icon: '💰', color: 'text-green-400' },
+  { term: 'Прогрев', definition: 'Процесс подготовки аккаунта к заказам путем имитации реальной активности покупателя.', icon: '🔥', color: 'text-orange-400' },
+  { term: 'Догрев', definition: 'Дополнительный этап прогрева для увеличения лимита аккаунта и повышения доверия.', icon: '⚡', color: 'text-yellow-400' },
+  { term: 'ГЕО', definition: 'Геолокация аккаунта — город, к которому привязан аккаунт для получения доставки.', icon: '📍', color: 'text-red-400' },
+  { term: 'Эмуляция', definition: 'Текущий статус активности аккаунта: готов к заказу, на прогреве или догреве.', icon: '🎮', color: 'text-purple-400' },
 ];
 
 export const AccountsPage: React.FC = () => {
@@ -194,47 +220,68 @@ export const AccountsPage: React.FC = () => {
     setShowTutorial(true);
   };
 
+  const currentHighlight = showTutorial ? tutorialSteps[tutorialStep].highlight : 'none';
+
   return (
     <div className="space-y-6">
       {/* Tutorial Overlay */}
       <AnimatePresence>
         {showTutorial && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
-            <div className="bg-gray-900 border border-white/20 rounded-xl p-6 max-w-md mx-4 animate-scale-in">
+          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={closeTutorial} />
+        )}
+      </AnimatePresence>
+      
+      {/* Tutorial Dialog */}
+      <AnimatePresence>
+        {showTutorial && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-md mx-4"
+          >
+            <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-white/20 rounded-2xl p-6 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5 text-primary" />
-                  <span className="text-sm text-muted-foreground">
-                    Шаг {tutorialStep + 1} из {tutorialSteps.length}
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{tutorialSteps[tutorialStep].icon}</span>
+                  <span className="text-sm text-primary font-medium">
+                    {tutorialStep + 1} / {tutorialSteps.length}
                   </span>
                 </div>
-                <button onClick={closeTutorial} className="text-muted-foreground hover:text-foreground">
+                <button onClick={closeTutorial} className="text-muted-foreground hover:text-foreground transition-colors">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <h3 className="text-xl font-bold text-foreground mb-2">
                 {tutorialSteps[tutorialStep].title}
               </h3>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-6 leading-relaxed">
                 {tutorialSteps[tutorialStep].description}
               </p>
               <div className="flex items-center justify-between">
-                <div className="flex gap-1">
+                <div className="flex gap-1.5">
                   {tutorialSteps.map((_, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full transition-colors ${
-                        index === tutorialStep ? 'bg-primary' : 'bg-white/20'
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        index === tutorialStep ? 'w-6 bg-primary' : 'w-1.5 bg-white/20'
                       }`}
                     />
                   ))}
                 </div>
-                <Button onClick={nextTutorialStep}>
-                  {tutorialStep === tutorialSteps.length - 1 ? 'Готово' : 'Далее'}
-                </Button>
+                <div className="flex gap-2">
+                  {tutorialStep > 0 && (
+                    <Button variant="outline" size="sm" onClick={() => setTutorialStep(prev => prev - 1)}>
+                      Назад
+                    </Button>
+                  )}
+                  <Button size="sm" onClick={nextTutorialStep}>
+                    {tutorialStep === tutorialSteps.length - 1 ? 'Завершить' : 'Далее →'}
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -242,51 +289,62 @@ export const AccountsPage: React.FC = () => {
       <AnimatePresence>
         {showGlossary && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
-            <div className="bg-gray-900 border border-white/20 rounded-xl p-6 max-w-lg mx-4 max-h-[80vh] overflow-y-auto animate-scale-in">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-primary" />
-                  <h3 className="text-xl font-bold text-foreground">Глоссарий</h3>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border border-white/20 rounded-2xl p-6 max-w-lg mx-4 max-h-[80vh] overflow-y-auto shadow-2xl"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/20 rounded-lg">
+                    <BookOpen className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-foreground">Глоссарий</h3>
+                    <p className="text-xs text-muted-foreground">Основные термины</p>
+                  </div>
                 </div>
-                <button onClick={() => setShowGlossary(false)} className="text-muted-foreground hover:text-foreground">
-                  <X className="w-5 h-5" />
+                <button onClick={() => setShowGlossary(false)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                  <X className="w-5 h-5 text-muted-foreground" />
                 </button>
               </div>
-              <div className="space-y-4">
-                <div className="p-3 bg-black/30 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">Аккаунт</h4>
-                  <p className="text-sm text-muted-foreground">Учетная запись на маркетплейсе, используемая для заказа товаров.</p>
-                </div>
-                <div className="p-3 bg-black/30 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">SPLIT (Сплит)</h4>
-                  <p className="text-sm text-muted-foreground">Максимальный лимит суммы заказа на аккаунте.</p>
-                </div>
-                <div className="p-3 bg-black/30 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">Прогрев</h4>
-                  <p className="text-sm text-muted-foreground">Процесс подготовки аккаунта к заказам путем имитации активности.</p>
-                </div>
-                <div className="p-3 bg-black/30 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">Догрев</h4>
-                  <p className="text-sm text-muted-foreground">Дополнительный прогрев для увеличения лимита аккаунта.</p>
-                </div>
-                <div className="p-3 bg-black/30 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">ГЕО</h4>
-                  <p className="text-sm text-muted-foreground">Геолокация аккаунта — город, к которому привязан аккаунт.</p>
-                </div>
+              <div className="space-y-3">
+                {glossaryItems.map((item, index) => (
+                  <motion.div 
+                    key={item.term}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="p-4 bg-black/30 rounded-xl border border-white/5 hover:border-white/20 transition-colors"
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl">{item.icon}</span>
+                      <div>
+                        <h4 className={`font-semibold ${item.color} mb-1`}>{item.term}</h4>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{item.definition}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Header with buttons */}
+      {/* Header with title and buttons */}
       <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">Аккаунты</h2>
+          <p className="text-sm text-muted-foreground">Аккаунты готовые к заказу либо нуждающиеся в догреве</p>
+        </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20">
+          <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20 hover:bg-white/10">
             <BookOpen className="w-4 h-4 mr-2" />
             Глоссарий
           </Button>
-          <Button variant="outline" size="sm" onClick={startTutorial} className="border-white/20">
+          <Button variant="outline" size="sm" onClick={startTutorial} className="border-white/20 hover:bg-white/10">
             <GraduationCap className="w-4 h-4 mr-2" />
             Обучение
           </Button>
@@ -294,7 +352,7 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Stats Row - Non-clickable */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className={`grid grid-cols-3 gap-4 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-50' : ''}`}>
         {stats.map((stat) => (
           <Card key={stat.label} className="bg-black/40 border border-white/10 backdrop-blur-sm">
             <CardContent className="p-4">
@@ -314,11 +372,11 @@ export const AccountsPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Готовы к заказу */}
         <Card 
-          className={`cursor-pointer transition-all duration-300 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] ${
+          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] ${
             showReadyOnly 
               ? 'bg-green-500/20 border-green-500/50 ring-2 ring-green-500/30' 
               : 'bg-black/40 border-white/10 hover:bg-black/50'
-          }`}
+          } ${currentHighlight === 'ready' ? 'ring-2 ring-primary z-50' : ''}`}
           onClick={() => setShowReadyOnly(true)}
         >
           <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
@@ -337,11 +395,11 @@ export const AccountsPage: React.FC = () => {
 
         {/* Догрев */}
         <Card 
-          className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
+          className={`cursor-pointer transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] ${
             !showReadyOnly 
               ? 'bg-yellow-500/20 border-yellow-500/50 ring-2 ring-yellow-500/30' 
               : 'bg-black/40 border-white/10 hover:bg-black/50'
-          }`}
+          } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary z-50' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
           <CardContent className="p-5">
@@ -357,38 +415,44 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Active Filters - Always visible */}
-      <div className="p-4 bg-black/30 rounded-lg border border-white/10">
+      <div className={`p-4 bg-black/30 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary z-50' : ''}`}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Активные фильтры:</span>
-          {activeFilters.map((filter) => (
-            <div
-              key={`${filter.label}-${filter.value}`}
-              className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
-                filter.label === 'Статус' 
-                  ? showReadyOnly 
-                    ? 'bg-green-500/20 border border-green-500/50' 
-                    : 'bg-yellow-500/20 border border-yellow-500/50'
-                  : 'bg-primary/20 border border-primary/50'
-              }`}
-            >
-              <span className="text-muted-foreground">{filter.label}:</span>
-              <span className={filter.color || 'text-foreground'}>{filter.value}</span>
-              {filter.onRemove && (
-                <button
-                  onClick={filter.onRemove}
-                  className="ml-1 hover:text-red-400 transition-colors"
-                >
-                  ×
-                </button>
-              )}
-            </div>
-          ))}
+          <AnimatePresence mode="popLayout">
+            {activeFilters.map((filter, index) => (
+              <motion.div
+                key={`${filter.label}-${filter.value}`}
+                initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                transition={{ duration: 0.2, delay: index * 0.05 }}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
+                  filter.label === 'Статус' 
+                    ? showReadyOnly 
+                      ? 'bg-green-500/20 border border-green-500/50' 
+                      : 'bg-yellow-500/20 border border-yellow-500/50'
+                    : 'bg-primary/20 border border-primary/50'
+                }`}
+              >
+                <span className="text-muted-foreground">{filter.label}:</span>
+                <span className={filter.color || 'text-foreground'}>{filter.value}</span>
+                {filter.onRemove && (
+                  <button
+                    onClick={filter.onRemove}
+                    className="ml-1 hover:text-red-400 transition-colors"
+                  >
+                    ×
+                  </button>
+                )}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </div>
 
 
       {/* Filters */}
-      <div className="flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10">
+      <div className={`flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary z-50' : ''}`}>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
@@ -464,7 +528,7 @@ export const AccountsPage: React.FC = () => {
       )}
 
       {/* Accounts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-500 ${currentHighlight === 'accounts' ? 'ring-2 ring-primary rounded-xl p-2 z-50' : ''}`}>
         {filteredAccounts.map((account) => {
           const isSelected = selectedAccounts.includes(account.id);
           return (
