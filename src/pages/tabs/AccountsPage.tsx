@@ -336,7 +336,6 @@ export const AccountsPage: React.FC = () => {
       {/* Header with title and buttons */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">Аккаунты</h2>
           <p className="text-sm text-muted-foreground">Аккаунты готовые к заказу либо нуждающиеся в догреве</p>
         </div>
         <div className="flex gap-2">
