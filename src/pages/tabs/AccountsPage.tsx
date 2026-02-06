@@ -93,11 +93,37 @@ export const AccountsPage: React.FC = () => {
   };
 
   const stats = [
-    { label: 'Всего', value: mockAccounts.length, icon: Users, color: 'text-blue-400' },
-    { label: 'Готовы', value: mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length, icon: CheckCircle, color: 'text-green-400' },
-    { label: 'По ГЕО', value: mockAccounts.filter(acc => acc.emulation_status.includes('ГЕО')).length, icon: MapPin, color: 'text-cyan-400' },
-    { label: 'Прогрев', value: mockAccounts.filter(acc => acc.emulation_status.includes('Предварительный')).length, icon: Zap, color: 'text-yellow-400' }
+    { label: 'Всего', value: mockAccounts.length, icon: Users, color: 'text-blue-400', bgColor: 'bg-blue-500/20' },
+    { label: 'Готовы', value: mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length, icon: CheckCircle, color: 'text-green-400', bgColor: 'bg-green-500/20' },
   ];
+
+  const statusCards = [
+    { label: 'Готовы к заказу', value: mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length, color: 'text-green-400', bgColor: 'bg-green-500/20', borderColor: 'border-green-500/50' },
+    { label: 'Догрев', value: mockAccounts.filter(acc => acc.emulation_status.includes('Предварительный') || acc.emulation_status.includes('ГЕО')).length, color: 'text-yellow-400', bgColor: 'bg-yellow-500/20', borderColor: 'border-yellow-500/50' },
+  ];
+
+  const activeFilters = useMemo(() => {
+    const filters: { label: string; value: string; onRemove: () => void }[] = [];
+    
+    if (selectedCity !== 'all') {
+      const cityLabel = selectedCity === 'unknown' ? 'Любой город' : selectedCity;
+      filters.push({ label: 'Город', value: cityLabel, onRemove: () => setSelectedCity('all') });
+    }
+    
+    if (showReadyOnly) {
+      filters.push({ label: 'Статус', value: 'Готовы к заказу', onRemove: () => setShowReadyOnly(false) });
+    }
+    
+    if (searchTerm) {
+      filters.push({ label: 'Поиск', value: searchTerm, onRemove: () => setSearchTerm('') });
+    }
+    
+    if (sortOrder !== 'none') {
+      filters.push({ label: 'Сплит', value: sortOrder === 'asc' ? 'По возрастанию' : 'По убыванию', onRemove: () => setSortOrder('none') });
+    }
+    
+    return filters;
+  }, [selectedCity, showReadyOnly, searchTerm, sortOrder]);
 
   const selectedAccountsData = mockAccounts.filter(acc => selectedAccounts.includes(acc.id));
   const totalCost = selectedAccountsData.reduce((sum, acc) => sum + acc.price, 0);
@@ -113,6 +139,12 @@ export const AccountsPage: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
+      {/* Header */}
+      <div className="mb-2">
+        <h2 className="text-2xl font-bold text-foreground">Аккаунты</h2>
+        <p className="text-sm text-muted-foreground">Выберите подходящий аккаунт для заказа</p>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
@@ -122,7 +154,7 @@ export const AccountsPage: React.FC = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: index * 0.1, duration: 0.4 }}
           >
-            <Card className="bg-black/30 border border-white/20 backdrop-blur-sm">
+            <Card className={`${stat.bgColor} border border-white/20 backdrop-blur-sm`}>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -135,7 +167,66 @@ export const AccountsPage: React.FC = () => {
             </Card>
           </motion.div>
         ))}
+        
+        {/* Status Cards */}
+        {statusCards.map((card, index) => (
+          <motion.div 
+            key={card.label}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: (stats.length + index) * 0.1, duration: 0.4 }}
+          >
+            <Card className={`${card.bgColor} border ${card.borderColor} backdrop-blur-sm`}>
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground">{card.label}</p>
+                    <p className={`text-xl font-bold ${card.color}`}>{card.value}</p>
+                  </div>
+                  {card.label === 'Готовы к заказу' ? (
+                    <CheckCircle className={`w-6 h-6 ${card.color}`} />
+                  ) : (
+                    <Zap className={`w-6 h-6 ${card.color}`} />
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ))}
       </div>
+
+      {/* Active Filters */}
+      <AnimatePresence>
+        {activeFilters.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="flex flex-wrap items-center gap-2"
+          >
+            <span className="text-sm text-muted-foreground">Активные фильтры:</span>
+            {activeFilters.map((filter, index) => (
+              <motion.div
+                key={`${filter.label}-${filter.value}`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex items-center gap-1 px-3 py-1 bg-primary/20 border border-primary/50 rounded-full text-sm"
+              >
+                <span className="text-muted-foreground">{filter.label}:</span>
+                <span className="text-foreground">{filter.value}</span>
+                <button
+                  onClick={filter.onRemove}
+                  className="ml-1 hover:text-red-400 transition-colors"
+                >
+                  ×
+                </button>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Filters */}
       <motion.div
