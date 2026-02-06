@@ -114,7 +114,13 @@ const Layout: React.FC = () => {
 
       <main className="flex-1 p-5 md:p-[30px] overflow-y-auto z-[5] relative transition-all duration-400 mt-[65px] mb-[70px] md:mt-0 md:mb-0 min-h-[calc(100vh-135px)] md:min-h-0">
         {/* Hide title on mobile for home page */}
-        <div className={activeTab === 'home' ? 'hidden md:block' : ''}>
+        <motion.div 
+          key={`title-${activeTab}`}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+          className={activeTab === 'home' ? 'hidden md:block' : ''}
+        >
           <h1 className="text-2xl md:text-[28px] font-bold text-foreground mb-1">
             {title}
           </h1>
@@ -129,7 +135,7 @@ const Layout: React.FC = () => {
             </p>
           )}
           {activeTab !== 'home' && activeTab !== 'accounts' && <div className="mb-4 md:mb-5" />}
-        </div>
+        </motion.div>
         
         <AnimatePresence mode="wait">
           <motion.div

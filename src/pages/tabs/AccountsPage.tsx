@@ -224,8 +224,8 @@ export const AccountsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 relative">
-      {/* Header with buttons - moved to top */}
-      <div className="flex items-center justify-end -mt-2">
+      {/* Header with buttons - aligned with title */}
+      <div className="flex items-center justify-end -mt-12 mb-2">
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20 hover:bg-white/10">
             <BookOpen className="w-4 h-4 mr-2" />
