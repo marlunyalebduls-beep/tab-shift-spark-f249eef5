@@ -71,26 +71,87 @@ export const HomePage: React.FC = () => {
     <div className="relative min-h-full">
       {!user && <GuestOverlay onOpenAuth={onOpenAuth} />}
 
-      {/* Mobile Layout - 4 Square Tiles */}
+      {/* Mobile Layout */}
       <motion.div 
-        className="md:hidden grid grid-cols-2 gap-4"
+        className="md:hidden flex flex-col gap-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {mobileTiles.map((tile, index) => (
-          <motion.div
-            key={tile.id}
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.4 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate(tile.path)}
-            className={`aspect-square rounded-2xl ${tile.bgColor} ${tile.borderColor} border-2 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center gap-3 hover:scale-105 transition-transform duration-200`}
-          >
-            <div className="text-4xl">{tile.emoji}</div>
-            <span className="text-foreground font-medium text-sm">{tile.label}</span>
-          </motion.div>
-        ))}
+        {/* Welcome Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <h1 className="text-2xl font-bold text-primary mb-2">zakazsplit.tech</h1>
+          <p className="text-muted-foreground text-sm">Добро пожаловать, ознакомьтесь с функциями сайта</p>
+        </motion.div>
+
+        {/* Navigation Tiles */}
+        <div className="grid grid-cols-2 gap-3">
+          {mobileTiles.map((tile, index) => (
+            <motion.div
+              key={tile.id}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.2 + index * 0.1, duration: 0.4 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate(tile.path)}
+              className="aspect-square rounded-xl bg-card/60 border border-border/50 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center gap-3 hover:bg-card/80 hover:border-primary/30 transition-all duration-300"
+            >
+              <div className={`w-14 h-14 rounded-xl ${tile.bgColor} border ${tile.borderColor} flex items-center justify-center`}>
+                <span className="text-2xl">{tile.emoji}</span>
+              </div>
+              <span className="text-foreground font-medium text-sm">{tile.label}</span>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Quick Stats for Mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.4 }}
+          className="grid grid-cols-2 gap-3"
+        >
+          <div className="p-4 rounded-xl bg-card/40 border border-border/30 backdrop-blur-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                <Users className="w-4 h-4 text-primary" />
+              </div>
+            </div>
+            <p className="text-lg font-bold text-foreground">{user ? '12' : '—'}</p>
+            <p className="text-xs text-muted-foreground">Активные</p>
+          </div>
+          <div className="p-4 rounded-xl bg-card/40 border border-border/30 backdrop-blur-sm">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
+                <Wallet className="w-4 h-4 text-primary" />
+              </div>
+            </div>
+            <p className="text-lg font-bold text-foreground">{user ? `₽${Math.floor(user.balance)}` : '—'}</p>
+            <p className="text-xs text-muted-foreground">Баланс</p>
+          </div>
+        </motion.div>
+
+        {/* Info Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.4 }}
+          className="p-4 rounded-xl bg-primary/5 border border-primary/20 backdrop-blur-sm"
+        >
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Flame className="w-4 h-4 text-primary" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-foreground mb-1">Прогрев аккаунтов</p>
+              <p className="text-xs text-muted-foreground">Безопасный прогрев с имитацией реальной активности</p>
+            </div>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Desktop Layout - Original Stats + Accounts */}
