@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { GuestOverlay } from '@/components/GuestOverlay';
@@ -8,6 +9,8 @@ import {
   Package, 
   Flame, 
   Wallet,
+  Smartphone,
+  ShoppingCart
 } from 'lucide-react';
 
 const mockPurchasedAccounts = [
@@ -16,8 +19,45 @@ const mockPurchasedAccounts = [
   { id: 'acc_003', name: 'Аккаунт #3', city: 'Казань', split: 100000, status: 'active' },
 ];
 
+// Mobile navigation tiles
+const mobileTiles = [
+  { 
+    id: 'accounts', 
+    path: '/accounts', 
+    label: 'Аккаунты', 
+    emoji: '👤',
+    bgColor: 'bg-yellow-500/20',
+    borderColor: 'border-yellow-500/40'
+  },
+  { 
+    id: 'orders', 
+    path: '/order', 
+    label: 'Заказы', 
+    emoji: '📦',
+    bgColor: 'bg-blue-500/20',
+    borderColor: 'border-blue-500/40'
+  },
+  { 
+    id: 'emulator', 
+    path: '/emulator', 
+    label: 'Эмулятор', 
+    emoji: '📱',
+    bgColor: 'bg-purple-500/20',
+    borderColor: 'border-purple-500/40'
+  },
+  { 
+    id: 'order-product', 
+    path: '/order', 
+    label: 'Заказ товара', 
+    emoji: '🛒',
+    bgColor: 'bg-green-500/20',
+    borderColor: 'border-green-500/40'
+  },
+];
+
 export const HomePage: React.FC = () => {
   const { user, onOpenAuth } = useLayoutContext();
+  const navigate = useNavigate();
   const purchasedAccounts = user ? mockPurchasedAccounts : [];
 
   const stats = [
@@ -31,12 +71,35 @@ export const HomePage: React.FC = () => {
     <div className="relative min-h-full">
       {!user && <GuestOverlay onOpenAuth={onOpenAuth} />}
 
+      {/* Mobile Layout - 4 Square Tiles */}
       <motion.div 
-        className="space-y-6"
+        className="md:hidden grid grid-cols-2 gap-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        {/* Stats Grid - transparent black with white border */}
+        {mobileTiles.map((tile, index) => (
+          <motion.div
+            key={tile.id}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.4 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate(tile.path)}
+            className={`aspect-square rounded-2xl ${tile.bgColor} ${tile.borderColor} border-2 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center gap-3 hover:scale-105 transition-transform duration-200`}
+          >
+            <div className="text-4xl">{tile.emoji}</div>
+            <span className="text-foreground font-medium text-sm">{tile.label}</span>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* Desktop Layout - Original Stats + Accounts */}
+      <motion.div 
+        className="hidden md:block space-y-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        {/* Stats Grid - Original Design */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {stats.map((stat, index) => (
             <motion.div
@@ -45,14 +108,14 @@ export const HomePage: React.FC = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: index * 0.1, duration: 0.4 }}
             >
-              <Card className="bg-black/30 border border-white/20 backdrop-blur-sm hover:bg-black/40 transition-all duration-300">
+              <Card className="bg-card/50 border border-border/50 backdrop-blur-sm hover:bg-card/70 transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">{stat.label}</p>
                       <p className="text-2xl font-bold text-foreground">{stat.value}</p>
                     </div>
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                    <div className="p-3 rounded-xl bg-primary/10 border border-primary/20">
                       <stat.icon className="w-6 h-6 text-primary" />
                     </div>
                   </div>
@@ -68,7 +131,7 @@ export const HomePage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.4 }}
         >
-          <Card className="bg-black/30 border border-white/20 backdrop-blur-sm">
+          <Card className="bg-card/50 border border-border/50 backdrop-blur-sm">
             <CardContent className="p-6">
               <h3 className="text-lg font-medium text-foreground mb-4">Ваши аккаунты</h3>
               
@@ -80,7 +143,7 @@ export const HomePage: React.FC = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.5 + index * 0.1 }}
-                      className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors"
+                      className="flex items-center justify-between p-4 rounded-lg bg-background/50 border border-border/30 hover:bg-background/70 transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
