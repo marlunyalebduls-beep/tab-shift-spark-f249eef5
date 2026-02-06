@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface GuestOverlayProps {
   onOpenAuth: () => void;
@@ -9,43 +10,48 @@ interface GuestOverlayProps {
 export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
+      initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       className="absolute inset-0 z-50 flex flex-col items-center justify-center"
     >
-      {/* Blur backdrop */}
-      <div className="absolute inset-0 backdrop-blur-md bg-background/60" />
+      {/* Blur backdrop - instant visibility */}
+      <div className="absolute inset-0 backdrop-blur-md bg-background/70" />
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6">
-        {/* Shaking lock icon */}
-        <motion.div
-          animate={{ 
-            x: [0, -8, 8, -8, 8, 0],
-          }}
-          transition={{ 
-            duration: 0.5,
-            repeat: Infinity,
-            repeatDelay: 2,
-            ease: "easeInOut"
-          }}
-          className="w-20 h-20 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center mb-6"
-        >
-          <Lock className="w-10 h-10 text-primary" />
-        </motion.div>
+        {/* Square container with shaking lock inside */}
+        <div className="w-24 h-24 rounded-2xl bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
+          <motion.div
+            animate={{ 
+              x: [0, -6, 6, -6, 6, 0],
+            }}
+            transition={{ 
+              duration: 0.4,
+              repeat: Infinity,
+              repeatDelay: 2.5,
+              ease: "easeInOut"
+            }}
+          >
+            <Lock className="w-12 h-12 text-primary" />
+          </motion.div>
+        </div>
         
         {/* Text */}
-        <p className="text-muted-foreground text-lg max-w-xs">
+        <p className="text-muted-foreground text-lg max-w-xs mb-6">
           Вы находитесь в гостевом режиме.
           <br />
-          <button 
-            onClick={onOpenAuth}
-            className="text-primary hover:underline mt-2 inline-block"
-          >
-            Авторизуйтесь
-          </button>
-          {' '}чтобы получить все функции
+          <span className="text-muted-foreground/70 text-base">
+            Авторизуйтесь, чтобы получить все функции
+          </span>
         </p>
+        
+        {/* Auth Button */}
+        <Button 
+          onClick={onOpenAuth}
+          className="gradient-telegram px-8 py-3 text-base font-medium"
+        >
+          Авторизоваться
+        </Button>
       </div>
     </motion.div>
   );

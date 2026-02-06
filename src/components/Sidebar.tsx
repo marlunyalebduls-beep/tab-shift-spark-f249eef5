@@ -224,7 +224,8 @@ const NavButton: React.FC<NavButtonProps> = ({ item, isActive, onClick, delay = 
       transition={{ delay, duration: 0.3 }}
       whileHover={{ x: isActive ? 0 : 8 }}
       whileTap={{ scale: 0.98 }}
-      className={`w-[calc(100%-32px)] mx-4 flex items-center px-3 py-3 rounded-lg transition-all duration-300 relative border group ${
+      style={{ outline: 'none' }}
+      className={`w-[calc(100%-32px)] mx-4 flex items-center px-3 py-3 rounded-lg transition-all duration-300 relative border group focus:outline-none focus-visible:outline-none ${
         isActive
           ? 'gradient-active-nav text-primary border-primary/30'
           : 'text-sidebar-foreground border-transparent hover:bg-foreground/[0.03] hover:text-foreground/90'

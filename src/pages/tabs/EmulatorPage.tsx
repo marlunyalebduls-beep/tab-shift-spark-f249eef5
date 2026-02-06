@@ -36,12 +36,12 @@ export const EmulatorPage: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Phone Mockup - Center */}
           <motion.div 
-            className="lg:col-span-2 flex items-center justify-center"
+            className="lg:col-span-2 flex items-center justify-center min-h-[500px]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <div className="relative">
+            <div className="flex flex-col items-center">
               {/* Phone Frame */}
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -101,9 +101,9 @@ export const EmulatorPage: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Specs Table - Right Bottom */}
+          {/* Specs Table - Right */}
           <motion.div 
-            className="flex items-end"
+            className="flex items-center"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}

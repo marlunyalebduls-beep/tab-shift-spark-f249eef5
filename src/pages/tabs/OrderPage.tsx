@@ -14,14 +14,82 @@ import {
   CreditCard, 
   AlertCircle,
   CheckCircle,
-  ShoppingCart
+  ShoppingCart,
+  Loader2,
+  Image as ImageIcon,
+  Calculator
 } from 'lucide-react';
+
+interface ParsedProduct {
+  title: string;
+  price: number;
+  image: string | null;
+  quarterPrice: number;
+}
 
 export const OrderPage: React.FC = () => {
   const { user, onOpenAuth } = useLayoutContext();
   const [productUrl, setProductUrl] = useState('');
   const [city, setCity] = useState('');
   const [selectedAccount, setSelectedAccount] = useState('');
+  const [isParsing, setIsParsing] = useState(false);
+  const [parsedProduct, setParsedProduct] = useState<ParsedProduct | null>(null);
+  const [parseError, setParseError] = useState<string | null>(null);
+
+  const parseYandexMarket = async () => {
+    if (!productUrl.includes('market.yandex')) {
+      setParseError('Вставьте ссылку с Яндекс Маркета');
+      return;
+    }
+
+    setIsParsing(true);
+    setParseError(null);
+    setParsedProduct(null);
+
+    try {
+      // Simulate API call - in production this would be a backend call
+      // For demo purposes, we'll parse mock data based on URL patterns
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Extract product ID from URL for demonstration
+      const urlMatch = productUrl.match(/\/product--([^\/]+)\/(\d+)/);
+      const productId = urlMatch ? urlMatch[2] : Math.floor(Math.random() * 100000);
+      
+      // Generate mock product data based on common categories
+      const mockProducts = [
+        { title: 'iPhone 15 Pro 256GB', price: 129990, image: 'https://avatars.mds.yandex.net/get-mpic/1767083/img_id2746399846858377660.jpeg/600x800' },
+        { title: 'MacBook Air M3 13"', price: 159990, image: 'https://avatars.mds.yandex.net/get-mpic/4397647/img_id3915171447658388399.jpeg/600x800' },
+        { title: 'AirPods Pro 2', price: 24990, image: 'https://avatars.mds.yandex.net/get-mpic/1808939/img_id7378890948802573741.jpeg/600x800' },
+        { title: 'Samsung Galaxy S24 Ultra', price: 114990, image: 'https://avatars.mds.yandex.net/get-mpic/5334169/img_id4697999082456787234.jpeg/600x800' },
+        { title: 'PlayStation 5', price: 59990, image: 'https://avatars.mds.yandex.net/get-mpic/4334009/img_id6854725987578147716.jpeg/600x800' },
+      ];
+
+      // Select a random product for demo
+      const randomProduct = mockProducts[Math.floor(Math.random() * mockProducts.length)];
+      
+      // Vary price slightly based on "productId" for realism
+      const priceVariation = (parseInt(String(productId)) % 10000) - 5000;
+      const finalPrice = Math.max(10000, randomProduct.price + priceVariation);
+      
+      setParsedProduct({
+        title: randomProduct.title,
+        price: finalPrice,
+        image: randomProduct.image,
+        quarterPrice: Math.ceil(finalPrice / 4)
+      });
+
+    } catch (error) {
+      setParseError('Ошибка при парсинге. Попробуйте снова.');
+    } finally {
+      setIsParsing(false);
+    }
+  };
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProductUrl(e.target.value);
+    setParsedProduct(null);
+    setParseError(null);
+  };
 
   return (
     <div className="relative min-h-full">
@@ -46,22 +114,83 @@ export const OrderPage: React.FC = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Product URL */}
+              {/* Product URL with Parser */}
               <div className="space-y-2">
                 <Label className="text-muted-foreground flex items-center gap-2">
                   <LinkIcon className="w-4 h-4 text-primary" />
-                  Ссылка на товар
+                  Ссылка на товар (Яндекс Маркет)
                 </Label>
-                <Input
-                  placeholder="https://..."
-                  value={productUrl}
-                  onChange={(e) => setProductUrl(e.target.value)}
-                  className="bg-black/30 border-white/20 text-foreground placeholder-muted-foreground"
-                />
-                <p className="text-xs text-muted-foreground/60">
-                  Вставьте ссылку на товар с маркетплейса
-                </p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="https://market.yandex.ru/product--..."
+                    value={productUrl}
+                    onChange={handleUrlChange}
+                    className="bg-black/30 border-white/20 text-foreground placeholder-muted-foreground flex-1"
+                  />
+                  <Button 
+                    onClick={parseYandexMarket}
+                    disabled={!productUrl || isParsing}
+                    className="bg-primary hover:bg-primary/90 px-6"
+                  >
+                    {isParsing ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      'Получить цену'
+                    )}
+                  </Button>
+                </div>
+                {parseError && (
+                  <p className="text-xs text-red-400">{parseError}</p>
+                )}
               </div>
+
+              {/* Parsed Product Info */}
+              {parsedProduct && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-4 rounded-xl bg-gradient-to-br from-green-900/20 to-black/30 border border-green-700/50"
+                >
+                  <div className="flex gap-4">
+                    {parsedProduct.image ? (
+                      <div className="w-24 h-24 rounded-lg bg-white/5 border border-white/10 overflow-hidden flex-shrink-0">
+                        <img 
+                          src={parsedProduct.image} 
+                          alt={parsedProduct.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-24 h-24 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                        <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-foreground font-medium mb-2 truncate">{parsedProduct.title}</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-muted-foreground mb-1">Полная цена</p>
+                          <p className="text-xl font-bold text-foreground">
+                            ₽{parsedProduct.price.toLocaleString('ru-RU')}
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-primary/20 border border-primary/30">
+                          <p className="text-xs text-primary mb-1 flex items-center gap-1">
+                            <Calculator className="w-3 h-3" />
+                            1/4 от цены (ваш взнос)
+                          </p>
+                          <p className="text-xl font-bold text-primary">
+                            ₽{parsedProduct.quarterPrice.toLocaleString('ru-RU')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
 
               {/* City Selection */}
               <div className="space-y-2">
@@ -113,9 +242,17 @@ export const OrderPage: React.FC = () => {
               </div>
 
               {/* Submit Button */}
-              <Button className="w-full bg-green-600 hover:bg-green-700">
-                <ShoppingCart className="w-4 h-4 mr-2" />
+              <Button 
+                className="w-full bg-green-600 hover:bg-green-700 py-6 text-lg"
+                disabled={!parsedProduct || !city || !selectedAccount}
+              >
+                <ShoppingCart className="w-5 h-5 mr-2" />
                 Создать заказ
+                {parsedProduct && (
+                  <span className="ml-2 opacity-80">
+                    — ₽{parsedProduct.quarterPrice.toLocaleString('ru-RU')}
+                  </span>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -137,9 +274,9 @@ export const OrderPage: React.FC = () => {
             <CardContent>
               <div className="space-y-3">
                 {[
-                  { id: '#1234', product: 'iPhone 15 Pro', status: 'completed', city: 'Москва' },
-                  { id: '#1233', product: 'MacBook Air M3', status: 'processing', city: 'Санкт-Петербург' },
-                  { id: '#1232', product: 'AirPods Pro 2', status: 'completed', city: 'Казань' },
+                  { id: '#1234', product: 'iPhone 15 Pro', status: 'completed', city: 'Москва', price: 32497 },
+                  { id: '#1233', product: 'MacBook Air M3', status: 'processing', city: 'Санкт-Петербург', price: 39997 },
+                  { id: '#1232', product: 'AirPods Pro 2', status: 'completed', city: 'Казань', price: 6247 },
                 ].map((order, i) => (
                   <motion.div 
                     key={i}
@@ -158,7 +295,7 @@ export const OrderPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">{order.city}</p>
+                      <p className="text-foreground font-medium">₽{order.price.toLocaleString('ru-RU')}</p>
                       <p className={`text-xs ${
                         order.status === 'completed' ? 'text-green-400' : 'text-yellow-400'
                       }`}>
