@@ -1,18 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface GuestOverlayProps {
   onOpenAuth: () => void;
 }
 
 export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
+  // Block scrolling when overlay is visible
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
-      className="absolute inset-0 z-50 flex flex-col items-center justify-center"
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center"
     >
       {/* Blur backdrop - instant visibility */}
       <div className="absolute inset-0 backdrop-blur-md bg-background/70" />
@@ -37,22 +44,19 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
           </motion.div>
         </div>
         
-        {/* Text */}
-        <p className="text-muted-foreground text-lg max-w-xs mb-6">
+        {/* Text with clickable authorization */}
+        <p className="text-muted-foreground text-lg max-w-xs">
           Вы находитесь в гостевом режиме.
-          <br />
-          <span className="text-muted-foreground/70 text-base">
-            Авторизуйтесь, чтобы получить все функции
-          </span>
         </p>
-        
-        {/* Auth Button */}
-        <Button 
-          onClick={onOpenAuth}
-          className="gradient-telegram px-8 py-3 text-base font-medium rounded-full"
-        >
-          Авторизоваться
-        </Button>
+        <p className="text-muted-foreground/70 text-base mt-2">
+          <button 
+            onClick={onOpenAuth}
+            className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors cursor-pointer font-medium"
+          >
+            Авторизуйтесь
+          </button>
+          , чтобы получить все функции
+        </p>
       </div>
     </motion.div>
   );
