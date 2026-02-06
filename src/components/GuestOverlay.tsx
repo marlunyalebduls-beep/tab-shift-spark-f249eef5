@@ -16,15 +16,11 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 1 }}
-      animate={{ opacity: 1 }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Blur backdrop - instant visibility */}
       <div className="absolute inset-0 backdrop-blur-md bg-background/70" />
       
-      {/* Content */}
+      {/* Content - centered immediately without animation */}
       <div className="relative z-10 flex flex-col items-center text-center px-6">
         {/* Circle container with bouncing lock inside */}
         <div className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
@@ -51,13 +47,13 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
         <p className="text-muted-foreground/70 text-base mt-2">
           <button 
             onClick={onOpenAuth}
-            className="text-primary hover:text-primary/80 underline underline-offset-2 transition-colors cursor-pointer font-medium"
+            className="text-primary hover:text-primary/80 transition-colors cursor-pointer font-medium"
           >
             Авторизуйтесь
           </button>
           , чтобы получить все функции
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };
