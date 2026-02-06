@@ -10,7 +10,9 @@ import {
   Flame, 
   Wallet,
   Smartphone,
-  ShoppingCart
+  ShoppingCart,
+  User,
+  type LucideIcon
 } from 'lucide-react';
 
 const mockPurchasedAccounts = [
@@ -19,39 +21,51 @@ const mockPurchasedAccounts = [
   { id: 'acc_003', name: 'Аккаунт #3', city: 'Казань', split: 100000, status: 'active' },
 ];
 
-// Mobile navigation tiles
-const mobileTiles = [
+// Mobile navigation tiles with icons
+const mobileTiles: {
+  id: string;
+  path: string;
+  label: string;
+  Icon: LucideIcon;
+  iconColor: string;
+  bgColor: string;
+  borderColor: string;
+}[] = [
   { 
     id: 'accounts', 
     path: '/accounts', 
     label: 'Аккаунты', 
-    emoji: '👤',
-    bgColor: 'bg-yellow-500/20',
-    borderColor: 'border-yellow-500/40'
+    Icon: User,
+    iconColor: 'text-yellow-400',
+    bgColor: 'bg-yellow-500/15',
+    borderColor: 'border-yellow-500/30'
   },
   { 
     id: 'orders', 
     path: '/order', 
     label: 'Заказы', 
-    emoji: '📦',
-    bgColor: 'bg-blue-500/20',
-    borderColor: 'border-blue-500/40'
+    Icon: Package,
+    iconColor: 'text-blue-400',
+    bgColor: 'bg-blue-500/15',
+    borderColor: 'border-blue-500/30'
   },
   { 
     id: 'emulator', 
     path: '/emulator', 
     label: 'Эмулятор', 
-    emoji: '📱',
-    bgColor: 'bg-purple-500/20',
-    borderColor: 'border-purple-500/40'
+    Icon: Smartphone,
+    iconColor: 'text-purple-400',
+    bgColor: 'bg-purple-500/15',
+    borderColor: 'border-purple-500/30'
   },
   { 
     id: 'order-product', 
     path: '/order', 
     label: 'Заказ товара', 
-    emoji: '🛒',
-    bgColor: 'bg-green-500/20',
-    borderColor: 'border-green-500/40'
+    Icon: ShoppingCart,
+    iconColor: 'text-green-400',
+    bgColor: 'bg-green-500/15',
+    borderColor: 'border-green-500/30'
   },
 ];
 
@@ -100,8 +114,8 @@ export const HomePage: React.FC = () => {
               onClick={() => navigate(tile.path)}
               className="aspect-square rounded-xl bg-card/60 border border-border/50 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center gap-3 hover:bg-card/80 hover:border-primary/30 transition-all duration-300"
             >
-              <div className={`w-14 h-14 rounded-xl ${tile.bgColor} border ${tile.borderColor} flex items-center justify-center`}>
-                <span className="text-2xl">{tile.emoji}</span>
+              <div className={`w-12 h-12 rounded-xl ${tile.bgColor} border ${tile.borderColor} flex items-center justify-center`}>
+                <tile.Icon className={`w-6 h-6 ${tile.iconColor}`} />
               </div>
               <span className="text-foreground font-medium text-sm">{tile.label}</span>
             </motion.div>
