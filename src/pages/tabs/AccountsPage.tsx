@@ -49,7 +49,7 @@ const formatSplit = (value: number) => `${(value / 1000).toFixed(0)}K`;
 export const AccountsPage: React.FC = () => {
   const { user } = useLayoutContext();
   const [selectedCity, setSelectedCity] = useState<string>('all');
-  const [showReadyOnly, setShowReadyOnly] = useState<boolean>(false);
+  const [showReadyOnly, setShowReadyOnly] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<SortOrder>('none');
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -135,6 +135,12 @@ export const AccountsPage: React.FC = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
+      {/* Header */}
+      <div className="mb-2">
+        <h2 className="text-2xl font-bold text-foreground">Аккаунты</h2>
+        <p className="text-sm text-muted-foreground">Аккаунты для заказа товара, готовые либо нуждающиеся в догреве</p>
+      </div>
+
       {/* Stats Row - Non-clickable */}
       <div className="grid grid-cols-3 gap-4">
         {stats.map((stat, index) => (
@@ -151,7 +157,7 @@ export const AccountsPage: React.FC = () => {
                     <p className="text-xs text-muted-foreground">{stat.label}</p>
                     <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
                   </div>
-                  <stat.icon className={`w-10 h-10 ${stat.color}`} />
+                  <stat.icon className={`w-6 h-6 ${stat.color}`} />
                 </div>
               </CardContent>
             </Card>
@@ -167,13 +173,13 @@ export const AccountsPage: React.FC = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.4 }}
         >
-          <Card className="bg-black/40 border border-white/10 backdrop-blur-sm relative overflow-hidden">
-            <div className="absolute top-2 right-2 px-2 py-1 bg-green-500/20 border border-green-500/50 rounded text-xs text-green-400 font-medium">
+          <Card className="bg-green-500/20 border border-green-500/50 backdrop-blur-sm relative overflow-hidden">
+            <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
               рекомендуется
             </div>
             <CardContent className="p-5">
               <div className="flex items-start gap-4">
-                <CheckCircle className="w-10 h-10 text-green-400 flex-shrink-0" />
+                <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Готовы к заказу</h3>
                   <p className="text-sm text-muted-foreground mt-1">Аккаунты для быстрого старта, готовы к заказу</p>
@@ -192,7 +198,7 @@ export const AccountsPage: React.FC = () => {
           <Card className="bg-black/40 border border-white/10 backdrop-blur-sm">
             <CardContent className="p-5">
               <div className="flex items-start gap-4">
-                <Zap className="w-10 h-10 text-yellow-400 flex-shrink-0" />
+                <Zap className="w-6 h-6 text-yellow-400 flex-shrink-0" />
                 <div>
                   <h3 className="text-lg font-bold text-foreground">Догрев</h3>
                   <p className="text-sm text-muted-foreground mt-1">Аккаунты для догрева с целью получения большего лимита</p>
@@ -212,15 +218,14 @@ export const AccountsPage: React.FC = () => {
       >
         <Button 
           onClick={() => setShowReadyOnly(true)}
-          className="bg-green-600 hover:bg-green-700 text-white"
+          className={showReadyOnly ? "bg-green-600 hover:bg-green-700 text-white" : "bg-black/40 border border-white/10 text-foreground hover:bg-black/60"}
         >
           <CheckCircle className="w-4 h-4 mr-2" />
           Показать готовые
         </Button>
         <Button 
           onClick={() => setShowReadyOnly(false)}
-          variant="outline"
-          className="border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/20"
+          className={!showReadyOnly ? "bg-yellow-600 hover:bg-yellow-700 text-white" : "bg-black/40 border border-white/10 text-foreground hover:bg-black/60"}
         >
           <Zap className="w-4 h-4 mr-2" />
           Показать на догреве
