@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent } from '@/components/ui/card';
-import { GuestOverlay } from '@/components/GuestOverlay';
 import { 
   Users, 
   Package, 
@@ -83,8 +82,6 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="relative min-h-full">
-      {/* Guest overlay only for desktop */}
-      {!user && <div className="hidden md:block"><GuestOverlay onOpenAuth={onOpenAuth} /></div>}
 
       {/* Mobile Layout - Always visible for guests */}
       <motion.div 
@@ -173,23 +170,6 @@ export const HomePage: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Guest CTA for mobile */}
-        {!user && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.4 }}
-            className="py-4 px-4 rounded-xl bg-card/60 border border-primary/30 backdrop-blur-sm text-center"
-          >
-            <p className="text-sm text-muted-foreground mb-3">Войдите, чтобы получить доступ ко всем функциям</p>
-            <button 
-              onClick={onOpenAuth}
-              className="gradient-telegram px-6 py-2.5 text-sm font-medium rounded-full text-white"
-            >
-              Авторизоваться
-            </button>
-          </motion.div>
-        )}
       </motion.div>
 
       {/* Desktop Layout - Original Stats + Accounts */}
