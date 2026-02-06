@@ -129,7 +129,12 @@ const Layout: React.FC = () => {
               Основная страница с навигацией по сайту
             </p>
           )}
-          {activeTab !== 'home' && <div className="mb-4 md:mb-5" />}
+          {activeTab === 'accounts' && (
+            <p className="text-sm text-muted-foreground mb-4 md:mb-5">
+              Аккаунты готовые к заказу либо нуждающиеся в догреве
+            </p>
+          )}
+          {activeTab !== 'home' && activeTab !== 'accounts' && <div className="mb-4 md:mb-5" />}
         </motion.div>
         
         <AnimatePresence mode="wait">
