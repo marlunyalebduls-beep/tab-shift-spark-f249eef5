@@ -249,7 +249,9 @@ export const AccountsPage: React.FC = () => {
                 transition={{ delay: index * 0.05 }}
                 className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
                   filter.label === 'Статус' 
-                    ? 'bg-black/40 border border-white/20' 
+                    ? showReadyOnly 
+                      ? 'bg-green-500/20 border border-green-500/50' 
+                      : 'bg-yellow-500/20 border border-yellow-500/50'
                     : 'bg-primary/20 border border-primary/50'
                 }`}
               >
@@ -321,14 +323,6 @@ export const AccountsPage: React.FC = () => {
             </Button>
           </div>
 
-          <Button
-            variant={showReadyOnly ? "default" : "outline"}
-            onClick={() => setShowReadyOnly(!showReadyOnly)}
-            className={showReadyOnly ? "bg-green-600 hover:bg-green-700" : "border-white/20"}
-          >
-            <CheckCircle className="w-4 h-4 mr-2" />
-            Готовы
-          </Button>
 
           <Button
             variant="outline"
