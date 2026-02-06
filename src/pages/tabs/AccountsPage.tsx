@@ -224,10 +224,10 @@ export const AccountsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Tutorial Overlay */}
+      {/* Tutorial Overlay - lower z-index so highlighted elements appear above */}
       <AnimatePresence>
         {showTutorial && (
-          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={closeTutorial} />
+          <div className="fixed inset-0 z-[55] bg-black/60 pointer-events-none" />
         )}
       </AnimatePresence>
       
@@ -333,9 +333,8 @@ export const AccountsPage: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Header with title and buttons */}
-      <div className="flex items-start justify-between -mt-1">
-        <p className="text-sm text-muted-foreground">Аккаунты готовые к заказу либо нуждающиеся в догреве</p>
+      {/* Header with buttons only */}
+      <div className="flex items-center justify-end">
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20 hover:bg-white/10">
             <BookOpen className="w-4 h-4 mr-2" />
@@ -349,16 +348,16 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Stats Row - Non-clickable */}
-      <div className={`grid grid-cols-3 gap-4 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[60]' : ''}`}>
+      <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[60]' : ''}`}>
         {stats.map((stat) => (
           <Card key={stat.label} className="bg-black/40 border border-white/10 backdrop-blur-sm">
-            <CardContent className="p-4">
+            <CardContent className="p-5 py-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{stat.label}</p>
+                  <p className={`text-3xl font-bold ${stat.color}`}>{stat.value}</p>
                 </div>
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
+                <stat.icon className={`w-8 h-8 ${stat.color}`} />
               </div>
             </CardContent>
           </Card>
@@ -366,7 +365,7 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Category Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Готовы к заказу */}
         <Card 
           className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] ${
@@ -379,12 +378,12 @@ export const AccountsPage: React.FC = () => {
           <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
             рекомендуется
           </div>
-          <CardContent className="p-5">
+          <CardContent className="p-6 py-8">
             <div className="flex items-start gap-4">
-              <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
+              <CheckCircle className="w-8 h-8 text-green-400 flex-shrink-0" />
               <div>
-                <h3 className="text-lg font-bold text-foreground">Готовы к заказу</h3>
-                <p className="text-sm text-muted-foreground mt-1">Аккаунты для быстрого старта, готовы к заказу</p>
+                <h3 className="text-xl font-bold text-foreground">Готовы к заказу</h3>
+                <p className="text-sm text-muted-foreground mt-2">Аккаунты для быстрого старта, готовы к заказу</p>
               </div>
             </div>
           </CardContent>
@@ -399,12 +398,12 @@ export const AccountsPage: React.FC = () => {
           } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[60]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
-          <CardContent className="p-5">
+          <CardContent className="p-6 py-8">
             <div className="flex items-start gap-4">
-              <Zap className="w-6 h-6 text-yellow-400 flex-shrink-0" />
+              <Zap className="w-8 h-8 text-yellow-400 flex-shrink-0" />
               <div>
-                <h3 className="text-lg font-bold text-foreground">Догрев</h3>
-                <p className="text-sm text-muted-foreground mt-1">Аккаунты для догрева с целью получения большего лимита</p>
+                <h3 className="text-xl font-bold text-foreground">Догрев</h3>
+                <p className="text-sm text-muted-foreground mt-2">Аккаунты для догрева с целью получения большего лимита</p>
               </div>
             </div>
           </CardContent>
