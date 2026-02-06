@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { NavItem, User } from '@/types/navigation';
@@ -58,6 +58,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navigate = useNavigate();
   const isAdmin = user?.role === 'admin';
+
+  // Calculate active indicator position
+  const allNavItems = useMemo(() => {
+    const items = [...mainNavItems];
+    if (isAdmin) {
+      items.push({ id: 'admin', path: '/admin', label: 'Управление', icon: <AdminIcon className="w-5 h-5" />, badge: 'admin' });
+    }
+    return items;
+  }, [isAdmin]);
+
+  const activeMainIndex = allNavItems.findIndex(item => item.id === activeTab);
+  const activeSettingsIndex = settingsNavItems.findIndex(item => item.id === activeTab);
 
   return (
     <motion.aside
@@ -125,8 +137,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             ОСНОВНОЕ
           </motion.h3>
-          <div className="space-y-0.5">
-            {mainNavItems.map((item, index) => (
+          <div className="space-y-0.5 relative">
+            {/* Animated indicator for main nav */}
+            {activeMainIndex !== -1 && (
+              <motion.div
+                className="absolute left-0 w-1 h-[44px] bg-primary rounded-r-full"
+                initial={false}
+                animate={{
+                  top: activeMainIndex * 45, // 44px height + 1px gap
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 350,
+                  damping: 30,
+                }}
+              />
+            )}
+            {allNavItems.map((item, index) => (
               <NavButton
                 key={item.id}
                 item={item}
@@ -136,15 +163,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 isVisible={isVisible}
               />
             ))}
-            {isAdmin && (
-              <NavButton
-                item={{ id: 'admin', path: '/admin', label: 'Управление', icon: <AdminIcon className="w-5 h-5" />, badge: 'admin' }}
-                isActive={activeTab === 'admin'}
-                onClick={() => navigate('/admin')}
-                delay={0.4 + mainNavItems.length * 0.05}
-                isVisible={isVisible}
-              />
-            )}
           </div>
         </motion.div>
 
@@ -161,7 +179,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             НАСТРОЙКИ
           </motion.h3>
-          <div className="space-y-0.5">
+          <div className="space-y-0.5 relative">
+            {/* Animated indicator for settings nav */}
+            {activeSettingsIndex !== -1 && (
+              <motion.div
+                className="absolute left-0 w-1 h-[44px] bg-primary rounded-r-full"
+                initial={false}
+                animate={{
+                  top: activeSettingsIndex * 45,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 350,
+                  damping: 30,
+                }}
+              />
+            )}
             {settingsNavItems.map((item, index) => (
               <NavButton
                 key={item.id}
@@ -273,14 +306,24 @@ const NavButton: React.FC<NavButtonProps> = ({ item, isActive, onClick, delay = 
       {item.badge === 'new' && <span className="badge-new ml-auto">Новое</span>}
       {item.badge === 'admin' && <span className="badge-admin ml-auto">permis</span>}
       {isActive && (
-        <motion.span 
-          className="absolute right-3 text-primary text-sm"
+        <motion.div 
+          className="absolute right-3 flex items-center"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.3 }}
         >
-          &gt;
-        </motion.span>
+          <motion.span
+            className="text-primary"
+            animate={{ x: [0, 4, 0] }}
+            transition={{ 
+              duration: 1.2, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+          >
+            ›
+          </motion.span>
+        </motion.div>
       )}
     </motion.button>
   );
