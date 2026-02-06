@@ -1,13 +1,10 @@
 import React from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface HomePageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
+export const HomePage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
 
-export const HomePage: React.FC<HomePageProps> = ({ user, onOpenAuth }) => {
   return (
     <div className="space-y-6">
       {/* Welcome Card */}

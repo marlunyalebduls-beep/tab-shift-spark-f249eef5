@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
-interface ChatPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
 
 interface Message {
   id: number;
@@ -22,7 +17,8 @@ const mockMessages: Message[] = [
   { id: 3, text: 'Конечно! Какой у вас вопрос?', sender: 'support', time: '10:06' },
 ];
 
-export const ChatPage: React.FC<ChatPageProps> = ({ user, onOpenAuth }) => {
+export const ChatPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
   const [messages, setMessages] = useState<Message[]>(mockMessages);
   const [newMessage, setNewMessage] = useState('');
 
@@ -39,7 +35,6 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onOpenAuth }) => {
     setMessages([...messages, message]);
     setNewMessage('');
 
-    // Simulate support response
     setTimeout(() => {
       setMessages(prev => [...prev, {
         id: prev.length + 1,
@@ -69,7 +64,6 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onOpenAuth }) => {
 
   return (
     <div className="space-y-4 h-[calc(100vh-250px)] md:h-[calc(100vh-180px)] flex flex-col">
-      {/* Chat Header */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader className="py-3">
           <div className="flex items-center justify-between">
@@ -92,7 +86,6 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onOpenAuth }) => {
         </CardHeader>
       </Card>
 
-      {/* Messages */}
       <Card className="bg-card/50 border-foreground/5 flex-1 overflow-hidden">
         <CardContent className="p-4 h-full overflow-y-auto space-y-4">
           {messages.map((message) => (
@@ -119,7 +112,6 @@ export const ChatPage: React.FC<ChatPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* Input */}
       <Card className="bg-card/50 border-foreground/5">
         <CardContent className="p-3">
           <div className="flex gap-3">

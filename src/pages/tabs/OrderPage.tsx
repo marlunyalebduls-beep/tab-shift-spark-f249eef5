@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-interface OrderPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
-
-export const OrderPage: React.FC<OrderPageProps> = ({ user, onOpenAuth }) => {
+export const OrderPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
   const [category, setCategory] = useState('');
   const [quantity, setQuantity] = useState('1');
   const [link, setLink] = useState('');
@@ -35,7 +31,6 @@ export const OrderPage: React.FC<OrderPageProps> = ({ user, onOpenAuth }) => {
 
   return (
     <div className="space-y-6">
-      {/* Order Form */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">🛒 Новый заказ</CardTitle>
@@ -95,7 +90,6 @@ export const OrderPage: React.FC<OrderPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* Recent Orders */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">📋 Ваши заказы</CardTitle>

@@ -1,13 +1,8 @@
 import React from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-
-interface WarmupPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
 
 interface WarmupTask {
   id: string;
@@ -25,7 +20,9 @@ const mockTasks: WarmupTask[] = [
   { id: '4', account: 'Аккаунт #4', progress: 0, status: 'queued', startTime: '—', actions: 0 },
 ];
 
-export const WarmupPage: React.FC<WarmupPageProps> = ({ user, onOpenAuth }) => {
+export const WarmupPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
+
   if (!user) {
     return (
       <Card className="bg-card/50 border-foreground/5">
@@ -48,7 +45,6 @@ export const WarmupPage: React.FC<WarmupPageProps> = ({ user, onOpenAuth }) => {
 
   return (
     <div className="space-y-6">
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="bg-card/50 border-foreground/5">
           <CardContent className="py-4">
@@ -76,7 +72,6 @@ export const WarmupPage: React.FC<WarmupPageProps> = ({ user, onOpenAuth }) => {
         </Card>
       </div>
 
-      {/* Actions */}
       <div className="flex gap-3 flex-wrap">
         <Button className="gradient-primary text-primary-foreground">
           + Запустить прогрев
@@ -89,7 +84,6 @@ export const WarmupPage: React.FC<WarmupPageProps> = ({ user, onOpenAuth }) => {
         </Button>
       </div>
 
-      {/* Tasks List */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">🔥 Задачи прогрева</CardTitle>

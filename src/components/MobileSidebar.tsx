@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NavItem, User } from '@/types/navigation';
 import {
   HomeIcon,
@@ -12,14 +13,12 @@ import {
   ChatIcon,
   AdminIcon,
   UserIcon,
-  CloseIcon,
 } from '@/components/icons/NavIcons';
 
 interface MobileSidebarProps {
   isOpen: boolean;
   onClose: () => void;
   activeTab: NavItem;
-  onNavigate: (tab: NavItem) => void;
   user: User | null;
   onOpenAuth: () => void;
   onOpenProfile: () => void;
@@ -27,37 +26,39 @@ interface MobileSidebarProps {
 
 interface NavItemData {
   id: NavItem;
+  path: string;
   label: string;
   icon: React.ReactNode;
 }
 
 const mainNavItems: NavItemData[] = [
-  { id: 'home', label: 'Главная', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
-  { id: 'accounts', label: 'Аккаунты', icon: <AccountsIcon className="w-[18px] h-[18px]" /> },
-  { id: 'order', label: 'Заказ товара', icon: <OrderIcon className="w-[18px] h-[18px]" /> },
-  { id: 'warmup', label: 'Прогрев', icon: <WarmupIcon className="w-[18px] h-[18px]" /> },
-  { id: 'emulator', label: 'Эмулятор', icon: <EmulatorIcon className="w-[18px] h-[18px]" /> },
-  { id: 'faq', label: 'FAQ', icon: <FAQIcon className="w-[18px] h-[18px]" /> },
+  { id: 'home', path: '/', label: 'Главная', icon: <HomeIcon className="w-[18px] h-[18px]" /> },
+  { id: 'accounts', path: '/accounts', label: 'Аккаунты', icon: <AccountsIcon className="w-[18px] h-[18px]" /> },
+  { id: 'order', path: '/order', label: 'Заказ товара', icon: <OrderIcon className="w-[18px] h-[18px]" /> },
+  { id: 'warmup', path: '/warmup', label: 'Прогрев', icon: <WarmupIcon className="w-[18px] h-[18px]" /> },
+  { id: 'emulator', path: '/emulator', label: 'Эмулятор', icon: <EmulatorIcon className="w-[18px] h-[18px]" /> },
+  { id: 'faq', path: '/faq', label: 'FAQ', icon: <FAQIcon className="w-[18px] h-[18px]" /> },
 ];
 
 const additionalNavItems: NavItemData[] = [
-  { id: 'config', label: 'Конфигурация', icon: <ConfigIcon className="w-4 h-[18px]" /> },
-  { id: 'chat', label: 'Чат поддержки', icon: <ChatIcon className="w-4 h-[18px]" /> },
+  { id: 'config', path: '/config', label: 'Конфигурация', icon: <ConfigIcon className="w-4 h-[18px]" /> },
+  { id: 'chat', path: '/chat', label: 'Чат поддержки', icon: <ChatIcon className="w-4 h-[18px]" /> },
 ];
 
 export const MobileSidebar: React.FC<MobileSidebarProps> = ({
   isOpen,
   onClose,
   activeTab,
-  onNavigate,
   user,
   onOpenAuth,
   onOpenProfile,
 }) => {
+  const navigate = useNavigate();
   const isAdmin = user?.role === 'admin';
 
-  const handleNavClick = (tab: NavItem) => {
-    onNavigate(tab);
+  const handleNavClick = (path: string) => {
+    navigate(path);
+    onClose();
   };
 
   return (
@@ -147,16 +148,16 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
                 key={item.id}
                 item={item}
                 isActive={activeTab === item.id}
-                onClick={() => handleNavClick(item.id)}
+                onClick={() => handleNavClick(item.path)}
                 isOpen={isOpen}
                 delay={0.05 + index * 0.02}
               />
             ))}
             {isAdmin && (
               <MobileNavButton
-                item={{ id: 'admin', label: 'Управление', icon: <AdminIcon className="w-[18px] h-[18px]" /> }}
+                item={{ id: 'admin', path: '/admin', label: 'Управление', icon: <AdminIcon className="w-[18px] h-[18px]" /> }}
                 isActive={activeTab === 'admin'}
-                onClick={() => handleNavClick('admin')}
+                onClick={() => handleNavClick('/admin')}
                 isOpen={isOpen}
                 delay={0.05 + mainNavItems.length * 0.02}
                 badge="admin"
@@ -186,7 +187,7 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
                 key={item.id}
                 item={item}
                 isActive={activeTab === item.id}
-                onClick={() => handleNavClick(item.id)}
+                onClick={() => handleNavClick(item.path)}
                 isOpen={isOpen}
                 delay={0.1 + (mainNavItems.length + index) * 0.02}
                 small

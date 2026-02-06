@@ -1,32 +1,54 @@
 import React, { useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { CanvasBackground } from '@/components/CanvasBackground';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { Sidebar } from '@/components/Sidebar';
 import { MobileHeader } from '@/components/MobileHeader';
 import { MobileSidebar } from '@/components/MobileSidebar';
 import { BottomNav } from '@/components/BottomNav';
-import { MainContent } from '@/components/MainContent';
 import { AuthModal } from '@/components/modals/AuthModal';
 import { SuccessModal } from '@/components/modals/SuccessModal';
 import { ProfileModal } from '@/components/modals/ProfileModal';
-import { useNavigation } from '@/hooks/useNavigation';
 import { useAuth } from '@/hooks/useAuth';
+import { NavItem } from '@/types/navigation';
 
-const Index = () => {
+const routeToTab: Record<string, NavItem> = {
+  '/': 'home',
+  '/accounts': 'accounts',
+  '/order': 'order',
+  '/warmup': 'warmup',
+  '/emulator': 'emulator',
+  '/faq': 'faq',
+  '/config': 'config',
+  '/payment': 'payment',
+  '/chat': 'chat',
+  '/admin': 'admin',
+};
+
+const tabTitles: Record<NavItem, string> = {
+  home: 'Главная',
+  accounts: 'Аккаунты',
+  order: 'Заказ товара',
+  warmup: 'Прогрев',
+  emulator: 'Эмулятор управления',
+  faq: 'FAQ',
+  config: 'Конфигурация фермы',
+  payment: 'Пополнение',
+  chat: 'Чат поддержки',
+  admin: 'Админ панель',
+};
+
+const Layout: React.FC = () => {
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(true);
   const [isLayoutVisible, setIsLayoutVisible] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  const {
-    activeTab,
-    navigateTo,
-    isMobileSidebarOpen,
-    toggleMobileSidebar,
-    closeMobileSidebar,
-  } = useNavigation('home');
+  const activeTab = routeToTab[location.pathname] || 'home';
+  const title = tabTitles[activeTab];
 
   const {
     user,
-    isAuthenticated,
     isLoading: isAuthLoading,
     isAuthModalOpen,
     isSuccessModalOpen,
@@ -40,11 +62,9 @@ const Index = () => {
     logout,
   } = useAuth();
 
-  // Simulate initial loading
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-      // Show layout after loading screen fades
       setTimeout(() => {
         setIsLayoutVisible(true);
       }, 100);
@@ -53,57 +73,49 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const toggleMobileSidebar = () => setIsMobileSidebarOpen(prev => !prev);
+  const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
+
   return (
     <div className="flex h-full w-full overflow-hidden md:gradient-mobile-bg">
-      {/* Loading Screen */}
       <LoadingScreen isVisible={isLoading} />
-
-      {/* Canvas Background (Desktop only) */}
       <CanvasBackground />
 
-      {/* Mobile Header */}
       <MobileHeader
         user={user}
         onMenuClick={toggleMobileSidebar}
         isVisible={isLayoutVisible}
       />
 
-      {/* Mobile Sidebar */}
       <MobileSidebar
         isOpen={isMobileSidebarOpen}
         onClose={closeMobileSidebar}
         activeTab={activeTab}
-        onNavigate={navigateTo}
         user={user}
         onOpenAuth={openAuthModal}
         onOpenProfile={openProfileModal}
       />
 
-      {/* Desktop Sidebar */}
       <Sidebar
         activeTab={activeTab}
-        onNavigate={navigateTo}
         user={user}
         onOpenAuth={openAuthModal}
         onOpenProfile={openProfileModal}
         isVisible={isLayoutVisible}
       />
 
-      {/* Main Content */}
-      <MainContent
-        activeTab={activeTab}
-        user={user}
-        onOpenAuth={openAuthModal}
-      />
+      <main className="flex-1 p-5 md:p-[30px] overflow-y-auto z-[5] relative transition-all duration-400 mt-[65px] mb-[70px] md:mt-0 md:mb-0 min-h-[calc(100vh-135px)] md:min-h-0">
+        <h1 className="text-2xl md:text-[28px] font-normal text-foreground mb-4 md:mb-5 transition-all duration-400">
+          {title}
+        </h1>
+        <Outlet context={{ user, onOpenAuth: openAuthModal }} />
+      </main>
 
-      {/* Mobile Bottom Navigation */}
       <BottomNav
         activeTab={activeTab}
-        onNavigate={navigateTo}
         isVisible={isLayoutVisible}
       />
 
-      {/* Modals */}
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={closeAuthModal}
@@ -126,4 +138,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Layout;

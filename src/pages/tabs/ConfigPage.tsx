@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,12 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 
-interface ConfigPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
-
-export const ConfigPage: React.FC<ConfigPageProps> = ({ user, onOpenAuth }) => {
+export const ConfigPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
   const [autoStart, setAutoStart] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [parallelTasks, setParallelTasks] = useState([3]);
@@ -37,7 +33,6 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ user, onOpenAuth }) => {
 
   return (
     <div className="space-y-6">
-      {/* General Settings */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">⚙️ Общие настройки</CardTitle>
@@ -69,7 +64,6 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* Performance Settings */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">🚀 Производительность</CardTitle>
@@ -113,7 +107,6 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* Proxy Settings */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">🌐 Прокси</CardTitle>
@@ -151,7 +144,6 @@ export const ConfigPage: React.FC<ConfigPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* Save Button */}
       <div className="flex justify-end">
         <Button className="gradient-primary text-primary-foreground px-8">
           💾 Сохранить настройки

@@ -1,14 +1,11 @@
 import React from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-interface AdminPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
+export const AdminPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
 
-export const AdminPage: React.FC<AdminPageProps> = ({ user, onOpenAuth }) => {
   if (!user || user.role !== 'admin') {
     return (
       <Card className="bg-card/50 border-foreground/5">
@@ -44,11 +41,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ user, onOpenAuth }) => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome */}
-      <Card className="bg-gradient-to-br from-[#ff6b6b]/20 to-[#ff6b6b]/5 border-[#ff6b6b]/30">
+      <Card className="bg-gradient-to-br from-destructive/20 to-destructive/5 border-destructive/30">
         <CardContent className="py-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#ff6b6b]/20 flex items-center justify-center text-3xl">
+            <div className="w-14 h-14 rounded-full bg-destructive/20 flex items-center justify-center text-3xl">
               👑
             </div>
             <div>
@@ -61,7 +57,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {stats.map((stat, i) => (
           <Card key={i} className="bg-card/50 border-foreground/5">
@@ -79,7 +74,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ user, onOpenAuth }) => {
         ))}
       </div>
 
-      {/* Quick Actions */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">⚡ Быстрые действия</CardTitle>
@@ -101,14 +95,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({ user, onOpenAuth }) => {
             <Button variant="outline" className="border-foreground/10">
               ⚙️ Настройки системы
             </Button>
-            <Button variant="outline" className="border-[#ff6b6b]/30 text-[#ff6b6b]">
+            <Button variant="outline" className="border-destructive/30 text-destructive">
               🚨 Логи ошибок
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Recent Users */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">👥 Новые пользователи</CardTitle>
@@ -141,7 +134,6 @@ export const AdminPage: React.FC<AdminPageProps> = ({ user, onOpenAuth }) => {
         </CardContent>
       </Card>
 
-      {/* System Status */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">🖥️ Состояние системы</CardTitle>

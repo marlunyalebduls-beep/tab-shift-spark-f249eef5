@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-interface PaymentPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
 
 const paymentMethods = [
   { id: 'card', name: 'Банковская карта', icon: '💳', description: 'Visa, MasterCard, МИР' },
@@ -19,7 +14,8 @@ const paymentMethods = [
 
 const amounts = [500, 1000, 2500, 5000, 10000, 25000];
 
-export const PaymentPage: React.FC<PaymentPageProps> = ({ user, onOpenAuth }) => {
+export const PaymentPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
   const [selectedMethod, setSelectedMethod] = useState('card');
   const [amount, setAmount] = useState('1000');
 
@@ -42,7 +38,6 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({ user, onOpenAuth }) =>
 
   return (
     <div className="space-y-6">
-      {/* Current Balance */}
       <Card className="bg-gradient-to-br from-primary/20 to-primary/5 border-primary/30">
         <CardContent className="py-6">
           <div className="flex items-center justify-between flex-wrap gap-4">
@@ -58,7 +53,6 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({ user, onOpenAuth }) =>
         </CardContent>
       </Card>
 
-      {/* Amount Selection */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">💵 Сумма пополнения</CardTitle>
@@ -93,7 +87,6 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({ user, onOpenAuth }) =>
         </CardContent>
       </Card>
 
-      {/* Payment Methods */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">💳 Способ оплаты</CardTitle>
@@ -126,7 +119,6 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({ user, onOpenAuth }) =>
         </CardContent>
       </Card>
 
-      {/* Pay Button */}
       <Card className="bg-card/50 border-foreground/5">
         <CardContent className="py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -141,7 +133,6 @@ export const PaymentPage: React.FC<PaymentPageProps> = ({ user, onOpenAuth }) =>
         </CardContent>
       </Card>
 
-      {/* Payment History */}
       <Card className="bg-card/50 border-foreground/5">
         <CardHeader>
           <CardTitle className="text-lg text-foreground">📜 История пополнений</CardTitle>

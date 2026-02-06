@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NavItem } from '@/types/navigation';
 import {
   HomeIcon,
@@ -10,29 +11,30 @@ import {
 
 interface BottomNavProps {
   activeTab: NavItem;
-  onNavigate: (tab: NavItem) => void;
   isVisible: boolean;
 }
 
 interface BottomNavItem {
   id: NavItem;
+  path: string;
   label: string;
   icon: React.ReactNode;
 }
 
 const bottomNavItems: BottomNavItem[] = [
-  { id: 'home', label: 'Главная', icon: <HomeIcon className="w-[22px] h-[22px]" /> },
-  { id: 'accounts', label: 'Аккаунты', icon: <AccountsIcon className="w-[22px] h-[22px]" /> },
-  { id: 'order', label: 'Заказы', icon: <OrderIcon className="w-[22px] h-[22px]" /> },
-  { id: 'payment', label: 'Пополнение', icon: <PaymentIcon className="w-[22px] h-[22px]" /> },
-  { id: 'faq', label: 'FAQ', icon: <FAQIcon className="w-[22px] h-[22px]" /> },
+  { id: 'home', path: '/', label: 'Главная', icon: <HomeIcon className="w-[22px] h-[22px]" /> },
+  { id: 'accounts', path: '/accounts', label: 'Аккаунты', icon: <AccountsIcon className="w-[22px] h-[22px]" /> },
+  { id: 'order', path: '/order', label: 'Заказы', icon: <OrderIcon className="w-[22px] h-[22px]" /> },
+  { id: 'payment', path: '/payment', label: 'Пополнение', icon: <PaymentIcon className="w-[22px] h-[22px]" /> },
+  { id: 'faq', path: '/faq', label: 'FAQ', icon: <FAQIcon className="w-[22px] h-[22px]" /> },
 ];
 
 export const BottomNav: React.FC<BottomNavProps> = ({
   activeTab,
-  onNavigate,
   isVisible,
 }) => {
+  const navigate = useNavigate();
+
   return (
     <nav
       className={`md:hidden fixed bottom-0 left-0 right-0 h-[70px] glass-dark border-t border-foreground/[0.08] z-[999] px-1.5 transition-all duration-400 ${
@@ -45,7 +47,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
           return (
             <button
               key={item.id}
-              onClick={() => onNavigate(item.id)}
+              onClick={() => navigate(item.path)}
               className={`flex flex-col items-center justify-center flex-1 h-full py-2 px-1.5 min-w-0 transition-all duration-300 ${
                 isActive ? 'text-primary' : 'text-muted-foreground/60'
               }`}

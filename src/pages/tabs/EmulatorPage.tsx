@@ -1,14 +1,11 @@
 import React from 'react';
-import { User } from '@/types/navigation';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-interface EmulatorPageProps {
-  user: User | null;
-  onOpenAuth: () => void;
-}
+export const EmulatorPage: React.FC = () => {
+  const { user, onOpenAuth } = useLayoutContext();
 
-export const EmulatorPage: React.FC<EmulatorPageProps> = ({ user, onOpenAuth }) => {
   if (!user) {
     return (
       <Card className="bg-card/50 border-foreground/5">
@@ -35,7 +32,6 @@ export const EmulatorPage: React.FC<EmulatorPageProps> = ({ user, onOpenAuth }) 
 
   return (
     <div className="space-y-6">
-      {/* Controls */}
       <div className="flex gap-3 flex-wrap">
         <Button className="gradient-primary text-primary-foreground">
           🚀 Запустить все
@@ -51,7 +47,6 @@ export const EmulatorPage: React.FC<EmulatorPageProps> = ({ user, onOpenAuth }) 
         </Button>
       </div>
 
-      {/* Devices Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {devices.map((device) => (
           <Card key={device.id} className="bg-card/50 border-foreground/5">
@@ -84,7 +79,6 @@ export const EmulatorPage: React.FC<EmulatorPageProps> = ({ user, onOpenAuth }) 
                 </div>
               </div>
               
-              {/* Mini Preview */}
               <div className="aspect-video bg-secondary/50 rounded-lg border border-foreground/5 flex items-center justify-center">
                 {device.status === 'online' ? (
                   <div className="text-center">

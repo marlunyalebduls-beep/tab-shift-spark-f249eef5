@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { NavItem, User } from '@/types/navigation';
 import {
   HomeIcon,
@@ -16,7 +17,6 @@ import {
 
 interface SidebarProps {
   activeTab: NavItem;
-  onNavigate: (tab: NavItem) => void;
   user: User | null;
   onOpenAuth: () => void;
   onOpenProfile: () => void;
@@ -25,34 +25,35 @@ interface SidebarProps {
 
 interface NavItemData {
   id: NavItem;
+  path: string;
   label: string;
   icon: React.ReactNode;
   badge?: 'new' | 'admin';
 }
 
 const mainNavItems: NavItemData[] = [
-  { id: 'home', label: 'Главная', icon: <HomeIcon className="w-5 h-5" /> },
-  { id: 'accounts', label: 'Аккаунты', icon: <AccountsIcon className="w-5 h-5" /> },
-  { id: 'order', label: 'Заказ товара', icon: <OrderIcon className="w-5 h-5" /> },
-  { id: 'warmup', label: 'Прогрев', icon: <WarmupIcon className="w-5 h-5" /> },
-  { id: 'emulator', label: 'Эмулятор управления', icon: <EmulatorIcon className="w-5 h-5" /> },
-  { id: 'faq', label: 'FAQ', icon: <FAQIcon className="w-5 h-5" /> },
+  { id: 'home', path: '/', label: 'Главная', icon: <HomeIcon className="w-5 h-5" /> },
+  { id: 'accounts', path: '/accounts', label: 'Аккаунты', icon: <AccountsIcon className="w-5 h-5" /> },
+  { id: 'order', path: '/order', label: 'Заказ товара', icon: <OrderIcon className="w-5 h-5" /> },
+  { id: 'warmup', path: '/warmup', label: 'Прогрев', icon: <WarmupIcon className="w-5 h-5" /> },
+  { id: 'emulator', path: '/emulator', label: 'Эмулятор управления', icon: <EmulatorIcon className="w-5 h-5" /> },
+  { id: 'faq', path: '/faq', label: 'FAQ', icon: <FAQIcon className="w-5 h-5" /> },
 ];
 
 const settingsNavItems: NavItemData[] = [
-  { id: 'config', label: 'Конфигурация фермы', icon: <ConfigIcon className="w-5 h-5" /> },
-  { id: 'payment', label: 'Пополнение', icon: <PaymentIcon className="w-5 h-5" />, badge: 'new' },
-  { id: 'chat', label: 'Чат поддержки', icon: <ChatIcon className="w-5 h-5" /> },
+  { id: 'config', path: '/config', label: 'Конфигурация фермы', icon: <ConfigIcon className="w-5 h-5" /> },
+  { id: 'payment', path: '/payment', label: 'Пополнение', icon: <PaymentIcon className="w-5 h-5" />, badge: 'new' },
+  { id: 'chat', path: '/chat', label: 'Чат поддержки', icon: <ChatIcon className="w-5 h-5" /> },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
-  onNavigate,
   user,
   onOpenAuth,
   onOpenProfile,
   isVisible,
 }) => {
+  const navigate = useNavigate();
   const isAdmin = user?.role === 'admin';
 
   return (
@@ -94,15 +95,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 key={item.id}
                 item={item}
                 isActive={activeTab === item.id}
-                onClick={() => onNavigate(item.id)}
+                onClick={() => navigate(item.path)}
                 delay={index * 0.03}
               />
             ))}
             {isAdmin && (
               <NavButton
-                item={{ id: 'admin', label: 'Управление', icon: <AdminIcon className="w-5 h-5" />, badge: 'admin' }}
+                item={{ id: 'admin', path: '/admin', label: 'Управление', icon: <AdminIcon className="w-5 h-5" />, badge: 'admin' }}
                 isActive={activeTab === 'admin'}
-                onClick={() => onNavigate('admin')}
+                onClick={() => navigate('/admin')}
                 delay={mainNavItems.length * 0.03}
               />
             )}
@@ -119,7 +120,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 key={item.id}
                 item={item}
                 isActive={activeTab === item.id}
-                onClick={() => onNavigate(item.id)}
+                onClick={() => navigate(item.path)}
                 delay={(mainNavItems.length + index) * 0.03}
               />
             ))}
