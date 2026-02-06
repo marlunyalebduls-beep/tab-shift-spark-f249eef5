@@ -33,10 +33,10 @@ export const EmulatorPage: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col lg:flex-row gap-6 items-center justify-center min-h-[500px]">
           {/* Phone Mockup - Center */}
           <motion.div 
-            className="lg:col-span-2 flex items-center justify-center min-h-[500px]"
+            className="flex-1 flex items-center justify-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -103,12 +103,12 @@ export const EmulatorPage: React.FC = () => {
 
           {/* Specs Table - Right */}
           <motion.div 
-            className="flex items-center"
+            className="w-full lg:w-80"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
           >
-            <Card className="bg-black/30 border border-white/20 backdrop-blur-sm w-full">
+            <Card className="bg-black/30 border border-white/20 backdrop-blur-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-foreground flex items-center gap-2">
                   <Cpu className="w-4 h-4 text-primary" />

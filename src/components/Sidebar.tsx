@@ -61,20 +61,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <motion.aside
-      initial={{ x: -280, opacity: 0 }}
+      initial={{ left: -260, opacity: 0 }}
       animate={{ 
-        x: isVisible ? 0 : -280, 
+        left: isVisible ? 0 : -260, 
         opacity: isVisible ? 1 : 0 
       }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="hidden md:flex flex-col w-[260px] h-full gradient-sidebar border-r border-sidebar-border z-10"
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      className="hidden md:flex flex-col w-[260px] h-full z-10 relative"
+      style={{
+        background: 'linear-gradient(to bottom right, rgba(58, 177, 228, 0.06) 0%, rgba(0, 0, 0, 0) 49.9%, rgba(0, 0, 0, 0) 50.1%, rgba(59, 130, 246, 0.05) 100%)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(4px)',
+        borderRight: '1px solid rgba(255, 255, 255, 0.05)',
+      }}
     >
       {/* Header with Logo */}
       <motion.div 
-        className="px-5 pt-6 pb-4 border-b border-sidebar-border"
+        className="px-5 pt-6 pb-4 border-b border-foreground/[0.08]"
         initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.4 }}
+        animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : -20 }}
+        transition={{ delay: 0.3, duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
       >
         <a 
           href="https://zakazsplit.tech/" 
@@ -82,19 +88,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
           target="_blank"
           rel="noopener noreferrer"
         >
-          <motion.img
-            src={logoImg}
-            alt="Logo"
-            className="w-[38px] h-[38px] object-contain opacity-90"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            transition={{ duration: 0.2 }}
-          />
-          <motion.img
-            src={logoTextImg}
-            alt="ZAKAZSPLIT"
-            className="h-[30px] w-[105px] object-contain opacity-90 brightness-110"
-            whileHover={{ opacity: 0.75 }}
-          />
+          <motion.div
+            className="w-[44px] h-[44px] flex items-center justify-center"
+            whileHover={{ rotate: -15, scale: 1.08 }}
+            transition={{ duration: 0.4 }}
+          >
+            <img
+              src={logoImg}
+              alt="Logo"
+              className="w-full h-full object-contain opacity-95 group-hover:opacity-75 transition-opacity duration-400"
+            />
+          </motion.div>
+          <div className="w-[130px] h-[40px] flex items-center justify-center">
+            <img
+              src={logoTextImg}
+              alt="ZAKAZSPLIT"
+              className="w-full h-full object-contain opacity-90 group-hover:opacity-75 transition-opacity duration-400"
+            />
+          </div>
         </a>
       </motion.div>
 
@@ -102,13 +113,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <nav className="flex-1 py-5 overflow-y-auto custom-scrollbar">
         <motion.div 
           className="mb-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+          transition={{ delay: 0.4, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <h3 className="text-xs font-semibold text-muted-foreground/50 uppercase tracking-wider px-5 mb-3">
+          <motion.h3 
+            className="text-xs font-semibold text-muted-foreground/50 uppercase tracking-wider px-5 mb-3"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : -10 }}
+            transition={{ delay: 0.4, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+          >
             ОСНОВНОЕ
-          </h3>
+          </motion.h3>
           <div className="space-y-0.5">
             {mainNavItems.map((item, index) => (
               <NavButton
@@ -116,7 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 item={item}
                 isActive={activeTab === item.id}
                 onClick={() => navigate(item.path)}
-                delay={0.3 + index * 0.05}
+                delay={0.4 + index * 0.05}
+                isVisible={isVisible}
               />
             ))}
             {isAdmin && (
@@ -124,20 +141,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 item={{ id: 'admin', path: '/admin', label: 'Управление', icon: <AdminIcon className="w-5 h-5" />, badge: 'admin' }}
                 isActive={activeTab === 'admin'}
                 onClick={() => navigate('/admin')}
-                delay={0.3 + mainNavItems.length * 0.05}
+                delay={0.4 + mainNavItems.length * 0.05}
+                isVisible={isVisible}
               />
             )}
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 20 }}
+          transition={{ delay: 0.5, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <h3 className="text-xs font-semibold text-muted-foreground/50 uppercase tracking-wider px-5 mb-3">
+          <motion.h3 
+            className="text-xs font-semibold text-muted-foreground/50 uppercase tracking-wider px-5 mb-3"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : -10 }}
+            transition={{ delay: 0.5, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+          >
             НАСТРОЙКИ
-          </h3>
+          </motion.h3>
           <div className="space-y-0.5">
             {settingsNavItems.map((item, index) => (
               <NavButton
@@ -146,6 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 isActive={activeTab === item.id}
                 onClick={() => navigate(item.path)}
                 delay={0.5 + index * 0.05}
+                isVisible={isVisible}
               />
             ))}
           </div>
@@ -154,17 +178,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* User Profile / Guest Mode */}
       <motion.div 
-        className="px-4 pb-5 pt-2 border-t border-sidebar-border"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+        className="px-4 pb-5 pt-2.5 border-t border-foreground/[0.08]"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 10 }}
+        transition={{ delay: 0.4, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
       >
         {user ? (
           <motion.button
             onClick={onOpenProfile}
-            className="w-full flex items-center p-3 rounded-lg bg-foreground/[0.03] border border-foreground/5 hover:bg-foreground/5 hover:border-foreground/10 transition-all duration-300 group"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 5 }}
+            transition={{ delay: 0.5, duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            className="w-full flex items-center p-3 rounded-[10px] bg-foreground/[0.03] border border-foreground/5 hover:bg-foreground/5 hover:border-foreground/10 transition-all duration-300 min-h-[60px]"
           >
             <div className="w-9 h-9 rounded-full avatar-gradient flex items-center justify-center text-base font-semibold text-primary-foreground mr-2.5 flex-shrink-0">
               {user.first_name.charAt(0).toUpperCase()}
@@ -184,21 +209,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
         ) : (
           <motion.button
             onClick={onOpenAuth}
-            className="w-full flex items-center p-3 rounded-lg bg-secondary/40 border border-foreground/10 hover:bg-secondary/60 transition-all duration-300 group"
-            whileHover={{ x: 4 }}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 5 }}
+            transition={{ delay: 0.5, duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            className="w-full flex items-center p-3 rounded-[10px] bg-secondary/40 border border-foreground/10 hover:bg-secondary/60 hover:translate-x-1 transition-all duration-300 min-h-[60px]"
           >
-            <div className="w-5 h-5 mr-2.5 text-muted-foreground group-hover:text-muted-foreground/80 transition-colors">
+            <div className="w-5 h-5 mr-2.5 text-muted-foreground/60">
               <UserIcon className="w-full h-full" />
             </div>
             <div className="flex-1 text-left">
-              <div className="text-sm font-medium text-foreground/90 group-hover:text-foreground transition-colors">
+              <div className="text-sm font-medium text-foreground/90">
                 Гостевой режим
               </div>
-              <div className="text-xs text-muted-foreground/50 group-hover:text-muted-foreground/70 transition-colors">
+              <div className="text-xs text-muted-foreground/50">
                 Нажмите для входа
               </div>
             </div>
-            <span className="text-muted-foreground/40 text-sm group-hover:text-muted-foreground/60 transition-all">
+            <span className="text-muted-foreground/40 text-sm">
               ›
             </span>
           </motion.button>
@@ -213,35 +240,32 @@ interface NavButtonProps {
   isActive: boolean;
   onClick: () => void;
   delay?: number;
+  isVisible: boolean;
 }
 
-const NavButton: React.FC<NavButtonProps> = ({ item, isActive, onClick, delay = 0 }) => {
+const NavButton: React.FC<NavButtonProps> = ({ item, isActive, onClick, delay = 0, isVisible }) => {
   return (
     <motion.button
       onClick={onClick}
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay, duration: 0.3 }}
-      whileHover={{ x: isActive ? 0 : 8 }}
-      whileTap={{ scale: 0.98 }}
-      style={{ outline: 'none' }}
-      className={`w-[calc(100%-32px)] mx-4 flex items-center px-3 py-3 rounded-lg transition-all duration-300 relative border group focus:outline-none focus-visible:outline-none ${
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 12 }}
+      transition={{ delay, duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+      className={`w-[calc(100%-32px)] mx-4 flex items-center px-3 py-3 rounded-lg transition-all duration-300 relative border ${
         isActive
           ? 'gradient-active-nav text-primary border-primary/30'
-          : 'text-sidebar-foreground border-transparent hover:bg-foreground/[0.03] hover:text-foreground/90'
+          : 'text-sidebar-foreground border-transparent hover:bg-foreground/[0.03] hover:text-foreground/90 hover:translate-x-2'
       }`}
     >
-      <motion.span
+      <span
         className={`w-5 h-5 mr-3 transition-all duration-300 ${
-          isActive ? 'text-primary' : 'text-muted-foreground'
+          isActive ? 'text-primary scale-110' : 'text-muted-foreground'
         }`}
-        animate={{ scale: isActive ? 1.1 : 1 }}
       >
         {item.icon}
-      </motion.span>
+      </span>
       <span
         className={`text-sm transition-all duration-300 ${
-          isActive ? 'font-medium text-primary' : 'font-normal'
+          isActive ? 'font-medium text-primary translate-x-0.5' : 'font-normal'
         }`}
       >
         {item.label}
@@ -251,8 +275,9 @@ const NavButton: React.FC<NavButtonProps> = ({ item, isActive, onClick, delay = 
       {isActive && (
         <motion.span 
           className="absolute right-3 text-primary text-sm"
-          initial={{ opacity: 0, x: -5 }}
+          initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
         >
           &gt;
         </motion.span>

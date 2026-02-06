@@ -23,13 +23,14 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
         <div className="w-24 h-24 rounded-2xl bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
           <motion.div
             animate={{ 
-              x: [0, -6, 6, -6, 6, 0],
+              y: [0, -8, 0, -4, 0],
             }}
             transition={{ 
-              duration: 0.4,
+              duration: 0.6,
               repeat: Infinity,
-              repeatDelay: 2.5,
-              ease: "easeInOut"
+              repeatDelay: 2,
+              ease: "easeOut",
+              times: [0, 0.3, 0.5, 0.7, 1]
             }}
           >
             <Lock className="w-12 h-12 text-primary" />
@@ -48,7 +49,7 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
         {/* Auth Button */}
         <Button 
           onClick={onOpenAuth}
-          className="gradient-telegram px-8 py-3 text-base font-medium"
+          className="gradient-telegram px-8 py-3 text-base font-medium rounded-full"
         >
           Авторизоваться
         </Button>
