@@ -1,5 +1,7 @@
 import React from 'react';
-import { TelegramIcon, CloseIcon } from '@/components/icons/NavIcons';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TelegramIcon } from '@/components/icons/NavIcons';
+import { X, Shield } from 'lucide-react';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -15,64 +17,75 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   isLoading,
 }) => {
   return (
-    <div
-      className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-[2000] flex items-center justify-center transition-all duration-400 ease-smooth ${
-        isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-      }`}
-      onClick={onClose}
-    >
-      <div
-        className={`glass-modal border border-foreground/[0.08] rounded-xl p-[30px] w-[90%] max-w-[400px] shadow-[0_20px_60px_rgba(0,0,0,0.4)] transition-all duration-500 ease-bounce-soft ${
-          isOpen ? 'translate-y-0 scale-100 opacity-100' : '-translate-y-5 scale-95 opacity-0'
-        }`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close Button */}
-        <button
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 bg-black/50 backdrop-blur-md z-[2000] flex items-center justify-center p-4"
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-muted-foreground/70 hover:text-foreground transition-colors"
         >
-          <CloseIcon className="w-[18px] h-[18px]" />
-        </button>
-
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h2 className="text-[22px] font-medium text-foreground tracking-wide mb-2">
-            Авторизация
-          </h2>
-          <p className="text-sm text-muted-foreground font-normal">
-            Войдите через Telegram для доступа
-          </p>
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col gap-4">
-          <button
-            onClick={onLogin}
-            disabled={isLoading}
-            className="flex items-center justify-center gap-3 p-4 gradient-telegram text-primary-foreground rounded-xl text-base font-medium transition-all duration-300 hover:scale-[1.025] disabled:opacity-70 disabled:cursor-not-allowed mt-2.5"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-card/95 border border-border/50 rounded-2xl p-6 w-full max-w-[380px] shadow-2xl backdrop-blur-xl"
+            onClick={(e) => e.stopPropagation()}
           >
-            {isLoading ? (
-              <>
-                <div className="w-6 h-6 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                Авторизация...
-              </>
-            ) : (
-              <>
-                <TelegramIcon className="w-6 h-6" />
-                Войти через Telegram
-              </>
-            )}
-          </button>
-        </div>
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all"
+            >
+              <X className="w-5 h-5" />
+            </button>
 
-        {/* Footer */}
-        <div className="text-center mt-5 pt-5 border-t border-foreground/10">
-          <p className="text-[13px] text-muted-foreground/50">
-            После авторизации вы получите доступ ко всем функциям
-          </p>
-        </div>
-      </div>
-    </div>
+            {/* Icon */}
+            <div className="flex justify-center mb-5">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-primary" />
+              </div>
+            </div>
+
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-semibold text-foreground mb-2">
+                Авторизация
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Войдите через Telegram для доступа к функциям
+              </p>
+            </div>
+
+            {/* Telegram Button */}
+            <button
+              onClick={onLogin}
+              disabled={isLoading}
+              className="w-full flex items-center justify-center gap-3 py-3.5 px-4 bg-[#0088cc] hover:bg-[#0077b5] text-white rounded-xl text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Авторизация...</span>
+                </>
+              ) : (
+                <>
+                  <TelegramIcon className="w-5 h-5" />
+                  <span>Войти через Telegram</span>
+                </>
+              )}
+            </button>
+
+            {/* Footer */}
+            <p className="text-center text-xs text-muted-foreground/60 mt-5">
+              Быстрый и безопасный вход через Telegram
+            </p>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

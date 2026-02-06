@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckIcon } from '@/components/icons/NavIcons';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, Sparkles } from 'lucide-react';
 
 interface SuccessModalProps {
   isOpen: boolean;
@@ -8,41 +9,73 @@ interface SuccessModalProps {
 
 export const SuccessModal: React.FC<SuccessModalProps> = ({ isOpen, onClose }) => {
   return (
-    <div
-      className={`fixed inset-0 bg-black/30 backdrop-blur-sm z-[2100] flex items-center justify-center transition-all duration-400 ease-smooth ${
-        isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-      }`}
-      onClick={onClose}
-    >
-      <div
-        className={`glass-modal border border-foreground/[0.08] rounded-xl p-[30px] w-[90%] max-w-[400px] shadow-[0_20px_60px_rgba(0,0,0,0.4)] text-center transition-all duration-500 ease-bounce-soft ${
-          isOpen ? 'translate-y-0 scale-100 opacity-100' : '-translate-y-5 scale-95 opacity-0'
-        }`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Success Icon */}
-        <div className="w-[70px] h-[70px] gradient-success-icon rounded-full flex items-center justify-center mx-auto mb-5">
-          <CheckIcon className="w-[35px] h-[35px] text-[#00dc64]" />
-        </div>
-
-        {/* Header */}
-        <div>
-          <h2 className="text-[22px] font-medium text-foreground tracking-wide mb-2.5">
-            Авторизация успешна!
-          </h2>
-          <p className="text-[15px] text-muted-foreground/70 mb-6 leading-relaxed">
-            Теперь вы можете пользоваться всеми функциями сайта
-          </p>
-        </div>
-
-        {/* Continue Button */}
-        <button
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 bg-black/50 backdrop-blur-md z-[2100] flex items-center justify-center p-4"
           onClick={onClose}
-          className="w-full flex items-center justify-center gap-2.5 py-2.5 px-6 gradient-primary text-primary-foreground rounded-lg text-base font-medium transition-all duration-300 hover:scale-[1.025] mt-2.5"
         >
-          Продолжить
-        </button>
-      </div>
-    </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 30 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 30 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-card/95 border border-border/50 rounded-2xl p-8 w-full max-w-[380px] shadow-2xl backdrop-blur-xl text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Animated Success Icon */}
+            <motion.div 
+              className="flex justify-center mb-6"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
+            >
+              <div className="relative">
+                <div className="w-20 h-20 rounded-full bg-green-500/10 border-2 border-green-500/30 flex items-center justify-center">
+                  <CheckCircle2 className="w-10 h-10 text-green-500" />
+                </div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.4, duration: 0.3 }}
+                  className="absolute -top-1 -right-1"
+                >
+                  <Sparkles className="w-5 h-5 text-yellow-400" />
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* Text */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.3 }}
+            >
+              <h2 className="text-xl font-semibold text-foreground mb-2">
+                Добро пожаловать!
+              </h2>
+              <p className="text-sm text-muted-foreground mb-6">
+                Авторизация прошла успешно. Теперь вам доступны все функции сайта.
+              </p>
+            </motion.div>
+
+            {/* Continue Button */}
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+              onClick={onClose}
+              className="w-full py-3 px-6 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-base font-medium transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Продолжить
+            </motion.button>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };

@@ -125,9 +125,9 @@ export const WalletIcon: React.FC<IconProps> = ({ className }) => (
 );
 
 export const MenuIcon: React.FC<IconProps> = ({ className }) => (
-  <div className={`flex flex-col justify-center items-center gap-[1.8px] ${className}`}>
-    <span className="block w-4 h-[1.2px] bg-foreground rounded-sm transition-all duration-300" />
-    <span className="block w-4 h-[1.2px] bg-foreground rounded-sm transition-all duration-300" />
-    <span className="block w-4 h-[1.2px] bg-foreground rounded-sm transition-all duration-300" />
-  </div>
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="4" y1="6" x2="20" y2="6" />
+    <line x1="4" y1="12" x2="16" y2="12" />
+    <line x1="4" y1="18" x2="12" y2="18" />
+  </svg>
 );
