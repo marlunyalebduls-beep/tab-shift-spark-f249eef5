@@ -83,11 +83,12 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="relative min-h-full">
-      {!user && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      {/* Guest overlay only for desktop */}
+      {!user && <div className="hidden md:block"><GuestOverlay onOpenAuth={onOpenAuth} /></div>}
 
-      {/* Mobile Layout */}
+      {/* Mobile Layout - Always visible for guests */}
       <motion.div 
-        className="md:hidden flex flex-col gap-6"
+        className="md:hidden flex flex-col gap-5"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
@@ -96,56 +97,60 @@ export const HomePage: React.FC = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center"
+          className="text-center pt-2"
         >
-          <h1 className="text-2xl font-bold text-primary mb-2">zakazsplit.tech</h1>
+          <h1 className="text-2xl font-bold text-primary mb-1">zakazsplit.tech</h1>
           <p className="text-muted-foreground text-sm">Добро пожаловать, ознакомьтесь с функциями сайта</p>
         </motion.div>
 
-        {/* Navigation Tiles */}
+        {/* Navigation Tiles - Rectangles */}
         <div className="grid grid-cols-2 gap-3">
           {mobileTiles.map((tile, index) => (
             <motion.div
               key={tile.id}
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.1, duration: 0.4 }}
-              whileTap={{ scale: 0.95 }}
+              transition={{ delay: 0.15 + index * 0.08, duration: 0.4 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => navigate(tile.path)}
-              className="aspect-[4/3] rounded-xl bg-card/60 border border-border/50 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center gap-2 hover:bg-card/80 hover:border-primary/30 transition-all duration-300"
+              className="py-5 px-4 rounded-xl bg-card/70 border border-border/40 backdrop-blur-sm cursor-pointer flex flex-col items-center justify-center gap-2.5 hover:bg-card/90 hover:border-primary/40 active:scale-[0.98] transition-all duration-200"
             >
-              <div className={`w-12 h-12 rounded-xl ${tile.bgColor} border ${tile.borderColor} flex items-center justify-center`}>
-                <tile.Icon className={`w-6 h-6 ${tile.iconColor}`} />
+              <div className={`w-11 h-11 rounded-xl ${tile.bgColor} border ${tile.borderColor} flex items-center justify-center`}>
+                <tile.Icon className={`w-5 h-5 ${tile.iconColor}`} />
               </div>
               <span className="text-foreground font-medium text-sm">{tile.label}</span>
             </motion.div>
           ))}
         </div>
 
-        {/* Quick Stats for Mobile */}
+        {/* Quick Stats Row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.4 }}
-          className="grid grid-cols-2 gap-3"
+          transition={{ delay: 0.5, duration: 0.4 }}
+          className="flex gap-3"
         >
-          <div className="p-4 rounded-xl bg-card/40 border border-border/30 backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="flex-1 py-4 px-4 rounded-xl bg-card/50 border border-border/30 backdrop-blur-sm">
+            <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                 <Users className="w-4 h-4 text-primary" />
               </div>
+              <div>
+                <p className="text-base font-bold text-foreground">{user ? '12' : '—'}</p>
+                <p className="text-[11px] text-muted-foreground">Активные</p>
+              </div>
             </div>
-            <p className="text-lg font-bold text-foreground">{user ? '12' : '—'}</p>
-            <p className="text-xs text-muted-foreground">Активные</p>
           </div>
-          <div className="p-4 rounded-xl bg-card/40 border border-border/30 backdrop-blur-sm">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="flex-1 py-4 px-4 rounded-xl bg-card/50 border border-border/30 backdrop-blur-sm">
+            <div className="flex items-center gap-2.5">
               <div className="p-2 rounded-lg bg-primary/10 border border-primary/20">
                 <Wallet className="w-4 h-4 text-primary" />
               </div>
+              <div>
+                <p className="text-base font-bold text-foreground">{user ? `₽${Math.floor(user.balance)}` : '—'}</p>
+                <p className="text-[11px] text-muted-foreground">Баланс</p>
+              </div>
             </div>
-            <p className="text-lg font-bold text-foreground">{user ? `₽${Math.floor(user.balance)}` : '—'}</p>
-            <p className="text-xs text-muted-foreground">Баланс</p>
           </div>
         </motion.div>
 
@@ -153,19 +158,37 @@ export const HomePage: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.4 }}
-          className="p-4 rounded-xl bg-primary/5 border border-primary/20 backdrop-blur-sm"
+          transition={{ delay: 0.6, duration: 0.4 }}
+          className="py-4 px-4 rounded-xl bg-primary/5 border border-primary/20 backdrop-blur-sm"
         >
-          <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-primary/10">
-              <Flame className="w-4 h-4 text-primary" />
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/20">
+              <Flame className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-medium text-foreground mb-1">Прогрев аккаунтов</p>
-              <p className="text-xs text-muted-foreground">Безопасный прогрев с имитацией реальной активности</p>
+              <p className="text-sm font-medium text-foreground">Прогрев аккаунтов</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Безопасный прогрев с реальной активностью</p>
             </div>
           </div>
         </motion.div>
+
+        {/* Guest CTA for mobile */}
+        {!user && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.4 }}
+            className="py-4 px-4 rounded-xl bg-card/60 border border-primary/30 backdrop-blur-sm text-center"
+          >
+            <p className="text-sm text-muted-foreground mb-3">Войдите, чтобы получить доступ ко всем функциям</p>
+            <button 
+              onClick={onOpenAuth}
+              className="gradient-telegram px-6 py-2.5 text-sm font-medium rounded-full text-white"
+            >
+              Авторизоваться
+            </button>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Desktop Layout - Original Stats + Accounts */}
