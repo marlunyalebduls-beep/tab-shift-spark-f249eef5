@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
 
@@ -15,12 +16,13 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
     };
   }, []);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Blur backdrop - instant visibility */}
+  // Use portal to render outside of animated page container
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+      {/* Blur backdrop */}
       <div className="absolute inset-0 backdrop-blur-md bg-background/70" />
       
-      {/* Content - centered immediately without animation */}
+      {/* Content - centered immediately */}
       <div className="relative z-10 flex flex-col items-center text-center px-6">
         {/* Circle container with bouncing lock inside */}
         <div className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
@@ -54,6 +56,7 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
           , чтобы получить все функции
         </p>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
