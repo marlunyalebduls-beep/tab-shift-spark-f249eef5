@@ -99,15 +99,18 @@ export const AccountsPage: React.FC = () => {
   ];
 
   const activeFilters = useMemo(() => {
-    const filters: { label: string; value: string; onRemove: () => void }[] = [];
+    const filters: { label: string; value: string; onRemove?: () => void; color?: string }[] = [];
+    
+    // Status is always first and cannot be removed
+    if (showReadyOnly) {
+      filters.push({ label: 'Статус', value: 'Готовы к заказу', color: 'text-green-400' });
+    } else {
+      filters.push({ label: 'Статус', value: 'Догрев', color: 'text-yellow-400' });
+    }
     
     if (selectedCity !== 'all') {
       const cityLabel = selectedCity === 'unknown' ? 'Любой город' : selectedCity;
       filters.push({ label: 'Город', value: cityLabel, onRemove: () => setSelectedCity('all') });
-    }
-    
-    if (showReadyOnly) {
-      filters.push({ label: 'Статус', value: 'Готовы к заказу', onRemove: () => setShowReadyOnly(false) });
     }
     
     if (searchTerm) {
@@ -236,31 +239,33 @@ export const AccountsPage: React.FC = () => {
       >
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Активные фильтры:</span>
-          {activeFilters.length > 0 ? (
-            <AnimatePresence mode="popLayout">
-              {activeFilters.map((filter, index) => (
-                <motion.div
-                  key={`${filter.label}-${filter.value}`}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="flex items-center gap-1 px-3 py-1 bg-primary/20 border border-primary/50 rounded-full text-sm"
-                >
-                  <span className="text-muted-foreground">{filter.label}:</span>
-                  <span className="text-foreground">{filter.value}</span>
+          <AnimatePresence mode="popLayout">
+            {activeFilters.map((filter, index) => (
+              <motion.div
+                key={`${filter.label}-${filter.value}`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ delay: index * 0.05 }}
+                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
+                  filter.label === 'Статус' 
+                    ? 'bg-black/40 border border-white/20' 
+                    : 'bg-primary/20 border border-primary/50'
+                }`}
+              >
+                <span className="text-muted-foreground">{filter.label}:</span>
+                <span className={filter.color || 'text-foreground'}>{filter.value}</span>
+                {filter.onRemove && (
                   <button
                     onClick={filter.onRemove}
                     className="ml-1 hover:text-red-400 transition-colors"
                   >
                     ×
                   </button>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          ) : (
-            <span className="text-xs text-muted-foreground/50">Нет активных фильтров</span>
-          )}
+                )}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </motion.div>
 
