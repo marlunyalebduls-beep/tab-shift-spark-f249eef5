@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { Lock } from 'lucide-react';
@@ -8,17 +8,27 @@ interface GuestOverlayProps {
 }
 
 export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
-  // Block scrolling when overlay is visible
+  const [mainElement, setMainElement] = useState<HTMLElement | null>(null);
+
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    // Find the main element to portal into and block scrolling
+    const main = document.querySelector('main');
+    if (main) {
+      setMainElement(main as HTMLElement);
+      main.style.overflow = 'hidden';
+    }
     return () => {
-      document.body.style.overflow = '';
+      if (main) {
+        main.style.overflow = '';
+      }
     };
   }, []);
 
-  // Use portal to render outside of animated page container
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+  const overlayContent = (
+    <div 
+      className="absolute inset-0 z-50 flex items-center justify-center"
+      style={{ transform: 'none' }}
+    >
       {/* Blur backdrop */}
       <div className="absolute inset-0 backdrop-blur-md bg-background/70" />
       
@@ -56,7 +66,14 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
           , чтобы получить все функции
         </p>
       </div>
-    </div>,
-    document.body
+    </div>
   );
+
+  // Portal into main element to stay within content area but escape page animations
+  if (mainElement) {
+    return createPortal(overlayContent, mainElement);
+  }
+
+  // Fallback render while waiting for main element
+  return overlayContent;
 };
