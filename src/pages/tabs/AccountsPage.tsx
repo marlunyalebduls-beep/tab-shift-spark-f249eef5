@@ -334,10 +334,8 @@ export const AccountsPage: React.FC = () => {
       </AnimatePresence>
 
       {/* Header with title and buttons */}
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground">Аккаунты готовые к заказу либо нуждающиеся в догреве</p>
-        </div>
+      <div className="flex items-start justify-between -mt-1">
+        <p className="text-sm text-muted-foreground">Аккаунты готовые к заказу либо нуждающиеся в догреве</p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20 hover:bg-white/10">
             <BookOpen className="w-4 h-4 mr-2" />
@@ -351,7 +349,7 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Stats Row - Non-clickable */}
-      <div className={`grid grid-cols-3 gap-4 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-50' : ''}`}>
+      <div className={`grid grid-cols-3 gap-4 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[60]' : ''}`}>
         {stats.map((stat) => (
           <Card key={stat.label} className="bg-black/40 border border-white/10 backdrop-blur-sm">
             <CardContent className="p-4">
@@ -375,7 +373,7 @@ export const AccountsPage: React.FC = () => {
             showReadyOnly 
               ? 'bg-green-500/20 border-green-500/50 ring-2 ring-green-500/30' 
               : 'bg-black/40 border-white/10 hover:bg-black/50'
-          } ${currentHighlight === 'ready' ? 'ring-2 ring-primary z-50' : ''}`}
+          } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[60]' : ''}`}
           onClick={() => setShowReadyOnly(true)}
         >
           <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
@@ -398,7 +396,7 @@ export const AccountsPage: React.FC = () => {
             !showReadyOnly 
               ? 'bg-yellow-500/20 border-yellow-500/50 ring-2 ring-yellow-500/30' 
               : 'bg-black/40 border-white/10 hover:bg-black/50'
-          } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary z-50' : ''}`}
+          } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[60]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
           <CardContent className="p-5">
@@ -414,7 +412,7 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Active Filters - Always visible */}
-      <div className={`p-4 bg-black/30 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary z-50' : ''}`}>
+      <div className={`p-4 bg-black/30 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[60]' : ''}`}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Активные фильтры:</span>
           <AnimatePresence mode="popLayout">
@@ -451,7 +449,7 @@ export const AccountsPage: React.FC = () => {
 
 
       {/* Filters */}
-      <div className={`flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary z-50' : ''}`}>
+      <div className={`flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[60]' : ''}`}>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
@@ -527,7 +525,7 @@ export const AccountsPage: React.FC = () => {
       )}
 
       {/* Accounts Grid */}
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-500 ${currentHighlight === 'accounts' ? 'ring-2 ring-primary rounded-xl p-2 z-50' : ''}`}>
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-500 ${currentHighlight === 'accounts' ? 'ring-2 ring-primary rounded-xl p-2 relative z-[60]' : ''}`}>
         {filteredAccounts.map((account) => {
           const isSelected = selectedAccounts.includes(account.id);
           return (
