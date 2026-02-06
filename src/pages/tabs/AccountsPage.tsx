@@ -165,15 +165,24 @@ export const AccountsPage: React.FC = () => {
         ))}
       </div>
 
-      {/* Category Cards */}
+      {/* Category Cards - Clickable */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Готовы к заказу */}
         <motion.div
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.4 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <Card className="bg-green-500/20 border border-green-500/50 backdrop-blur-sm relative overflow-hidden">
+          <Card 
+            className={`cursor-pointer transition-all duration-300 relative overflow-hidden ${
+              showReadyOnly 
+                ? 'bg-green-500/20 border-green-500/50 ring-2 ring-green-500/30' 
+                : 'bg-black/40 border-white/10 hover:bg-black/50'
+            }`}
+            onClick={() => setShowReadyOnly(true)}
+          >
             <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
               рекомендуется
             </div>
@@ -194,8 +203,17 @@ export const AccountsPage: React.FC = () => {
           initial={{ opacity: 0, y: 20, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.4 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <Card className="bg-black/40 border border-white/10 backdrop-blur-sm">
+          <Card 
+            className={`cursor-pointer transition-all duration-300 ${
+              !showReadyOnly 
+                ? 'bg-yellow-500/20 border-yellow-500/50 ring-2 ring-yellow-500/30' 
+                : 'bg-black/40 border-white/10 hover:bg-black/50'
+            }`}
+            onClick={() => setShowReadyOnly(false)}
+          >
             <CardContent className="p-5">
               <div className="flex items-start gap-4">
                 <Zap className="w-6 h-6 text-yellow-400 flex-shrink-0" />
@@ -209,61 +227,43 @@ export const AccountsPage: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Active Filters - Always visible */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.4 }}
-        className="flex flex-wrap gap-4"
+        className="p-4 bg-black/30 rounded-lg border border-white/10"
       >
-        <Button 
-          onClick={() => setShowReadyOnly(true)}
-          className={showReadyOnly ? "bg-green-600 hover:bg-green-700 text-white" : "bg-black/40 border border-white/10 text-foreground hover:bg-black/60"}
-        >
-          <CheckCircle className="w-4 h-4 mr-2" />
-          Показать готовые
-        </Button>
-        <Button 
-          onClick={() => setShowReadyOnly(false)}
-          className={!showReadyOnly ? "bg-yellow-600 hover:bg-yellow-700 text-white" : "bg-black/40 border border-white/10 text-foreground hover:bg-black/60"}
-        >
-          <Zap className="w-4 h-4 mr-2" />
-          Показать на догреве
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm text-muted-foreground">Активные фильтры:</span>
+          {activeFilters.length > 0 ? (
+            <AnimatePresence mode="popLayout">
+              {activeFilters.map((filter, index) => (
+                <motion.div
+                  key={`${filter.label}-${filter.value}`}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-center gap-1 px-3 py-1 bg-primary/20 border border-primary/50 rounded-full text-sm"
+                >
+                  <span className="text-muted-foreground">{filter.label}:</span>
+                  <span className="text-foreground">{filter.value}</span>
+                  <button
+                    onClick={filter.onRemove}
+                    className="ml-1 hover:text-red-400 transition-colors"
+                  >
+                    ×
+                  </button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          ) : (
+            <span className="text-xs text-muted-foreground/50">Нет активных фильтров</span>
+          )}
+        </div>
       </motion.div>
 
-      {/* Active Filters */}
-      <AnimatePresence>
-        {activeFilters.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="flex flex-wrap items-center gap-2"
-          >
-            <span className="text-sm text-muted-foreground">Активные фильтры:</span>
-            {activeFilters.map((filter, index) => (
-              <motion.div
-                key={`${filter.label}-${filter.value}`}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ delay: index * 0.05 }}
-                className="flex items-center gap-1 px-3 py-1 bg-primary/20 border border-primary/50 rounded-full text-sm"
-              >
-                <span className="text-muted-foreground">{filter.label}:</span>
-                <span className="text-foreground">{filter.value}</span>
-                <button
-                  onClick={filter.onRemove}
-                  className="ml-1 hover:text-red-400 transition-colors"
-                >
-                  ×
-                </button>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Filters */}
       <motion.div
