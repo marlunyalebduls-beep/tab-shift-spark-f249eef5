@@ -223,7 +223,21 @@ export const AccountsPage: React.FC = () => {
   const currentHighlight = showTutorial ? tutorialSteps[tutorialStep].highlight : 'none';
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Header with buttons - moved to top */}
+      <div className="flex items-center justify-end -mt-2">
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20 hover:bg-white/10">
+            <BookOpen className="w-4 h-4 mr-2" />
+            Глоссарий
+          </Button>
+          <Button variant="outline" size="sm" onClick={startTutorial} className="border-white/20 hover:bg-white/10">
+            <GraduationCap className="w-4 h-4 mr-2" />
+            Обучение
+          </Button>
+        </div>
+      </div>
+
       {/* Tutorial Overlay - lower z-index so highlighted elements appear above */}
       <AnimatePresence>
         {showTutorial && (
@@ -332,20 +346,6 @@ export const AccountsPage: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Header with buttons only */}
-      <div className="flex items-center justify-end">
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowGlossary(true)} className="border-white/20 hover:bg-white/10">
-            <BookOpen className="w-4 h-4 mr-2" />
-            Глоссарий
-          </Button>
-          <Button variant="outline" size="sm" onClick={startTutorial} className="border-white/20 hover:bg-white/10">
-            <GraduationCap className="w-4 h-4 mr-2" />
-            Обучение
-          </Button>
-        </div>
-      </div>
 
       {/* Stats Row - Non-clickable */}
       <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[60]' : ''}`}>

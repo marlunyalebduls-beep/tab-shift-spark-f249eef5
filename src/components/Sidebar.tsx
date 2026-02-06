@@ -138,21 +138,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ОСНОВНОЕ
           </motion.h3>
           <div className="space-y-0.5 relative">
-            {/* Animated indicator for main nav */}
-            {activeMainIndex !== -1 && (
-              <motion.div
-                className="absolute left-0 w-1 h-[44px] bg-primary rounded-r-full"
-                initial={false}
-                animate={{
-                  top: activeMainIndex * 45, // 44px height + 1px gap
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 350,
-                  damping: 30,
-                }}
-              />
-            )}
             {allNavItems.map((item, index) => (
               <NavButton
                 key={item.id}
@@ -180,21 +165,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
             НАСТРОЙКИ
           </motion.h3>
           <div className="space-y-0.5 relative">
-            {/* Animated indicator for settings nav */}
-            {activeSettingsIndex !== -1 && (
-              <motion.div
-                className="absolute left-0 w-1 h-[44px] bg-primary rounded-r-full"
-                initial={false}
-                animate={{
-                  top: activeSettingsIndex * 45,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 350,
-                  damping: 30,
-                }}
-              />
-            )}
             {settingsNavItems.map((item, index) => (
               <NavButton
                 key={item.id}
