@@ -25,15 +25,29 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
   }, []);
 
   const overlayContent = (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
       className="absolute inset-0 z-50 flex items-center justify-center"
       style={{ transform: 'none' }}
     >
       {/* Blur backdrop */}
-      <div className="absolute inset-0 backdrop-blur-md bg-background/70" />
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="absolute inset-0 backdrop-blur-md bg-background/70" 
+      />
       
       {/* Content - centered immediately */}
-      <div className="relative z-10 flex flex-col items-center text-center px-6">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+        className="relative z-10 flex flex-col items-center text-center px-6"
+      >
         {/* Circle container with bouncing lock inside */}
         <div className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center mb-6 overflow-hidden">
           <motion.div
@@ -65,8 +79,8 @@ export const GuestOverlay: React.FC<GuestOverlayProps> = ({ onOpenAuth }) => {
           </button>
           , чтобы получить все функции
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 
   // Portal into main element to stay within content area but escape page animations

@@ -17,8 +17,11 @@ import {
   RefreshCw,
   BookOpen,
   GraduationCap,
-  X
+  X,
+  ChevronRight,
+  Info
 } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
@@ -95,12 +98,12 @@ const tutorialSteps = [
 ];
 
 const glossaryItems = [
-  { term: 'Аккаунт', definition: 'Учетная запись на маркетплейсе, используемая для заказа товаров.', icon: '👤', color: 'text-blue-400' },
-  { term: 'SPLIT (Сплит)', definition: 'Максимальный лимит суммы заказа на аккаунте. Чем выше сплит — тем дороже товары можно заказывать.', icon: '💰', color: 'text-green-400' },
-  { term: 'Прогрев', definition: 'Процесс подготовки аккаунта к заказам путем имитации реальной активности покупателя.', icon: '🔥', color: 'text-orange-400' },
-  { term: 'Догрев', definition: 'Дополнительный этап прогрева для увеличения лимита аккаунта и повышения доверия.', icon: '⚡', color: 'text-yellow-400' },
-  { term: 'ГЕО', definition: 'Геолокация аккаунта — город, к которому привязан аккаунт для получения доставки.', icon: '📍', color: 'text-red-400' },
-  { term: 'Эмуляция', definition: 'Текущий статус активности аккаунта: готов к заказу, на прогреве или догреве.', icon: '🎮', color: 'text-purple-400' },
+  { term: 'Аккаунт', definition: 'Учетная запись на маркетплейсе, используемая для заказа товаров.', icon: Users, color: 'text-blue-400' },
+  { term: 'SPLIT (Сплит)', definition: 'Максимальный лимит суммы заказа на аккаунте. Чем выше сплит — тем дороже товары можно заказывать.', icon: Zap, color: 'text-green-400' },
+  { term: 'Прогрев', definition: 'Процесс подготовки аккаунта к заказам путем имитации реальной активности покупателя.', icon: RefreshCw, color: 'text-orange-400' },
+  { term: 'Догрев', definition: 'Дополнительный этап прогрева для увеличения лимита аккаунта и повышения доверия.', icon: ArrowUp, color: 'text-yellow-400' },
+  { term: 'ГЕО', definition: 'Геолокация аккаунта — город, к которому привязан аккаунт для получения доставки.', icon: MapPin, color: 'text-red-400' },
+  { term: 'Эмуляция', definition: 'Текущий статус активности аккаунта: готов к заказу, на прогреве или догреве.', icon: CheckCircle, color: 'text-purple-400' },
 ];
 
 export const AccountsPage: React.FC = () => {
@@ -238,22 +241,25 @@ export const AccountsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tutorial Overlay - lower z-index so highlighted elements appear above */}
+      {/* Tutorial Overlay + Dialog - same AnimatePresence to ensure proper stacking */}
       <AnimatePresence>
         {showTutorial && (
-          <div className="fixed inset-0 z-[55] bg-black/60 pointer-events-none" />
-        )}
-      </AnimatePresence>
-      
-      {/* Tutorial Dialog */}
-      <AnimatePresence>
-        {showTutorial && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-md mx-4"
-          >
+          <>
+            {/* Overlay backdrop - pointer-events-none so clicks pass to dialog */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] bg-black/60 pointer-events-none" 
+            />
+            
+            {/* Tutorial Dialog - higher z-index than overlay */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[101] w-full max-w-md mx-4 pointer-events-auto"
+            >
             <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-white/20 rounded-2xl p-6 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -296,6 +302,7 @@ export const AccountsPage: React.FC = () => {
               </div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -333,7 +340,9 @@ export const AccountsPage: React.FC = () => {
                     className="p-4 bg-black/30 rounded-xl border border-white/5 hover:border-white/20 transition-colors"
                   >
                     <div className="flex items-start gap-3">
-                      <span className="text-xl">{item.icon}</span>
+                      <div className={`p-2 rounded-lg bg-white/5 ${item.color}`}>
+                        <item.icon className="w-5 h-5" />
+                      </div>
                       <div>
                         <h4 className={`font-semibold ${item.color} mb-1`}>{item.term}</h4>
                         <p className="text-sm text-muted-foreground leading-relaxed">{item.definition}</p>
@@ -443,6 +452,42 @@ export const AccountsPage: React.FC = () => {
               </motion.div>
             ))}
           </AnimatePresence>
+          
+          {/* Info popover with filter details */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="ml-auto p-1.5 rounded-full hover:bg-white/10 transition-colors group">
+                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent 
+              align="end" 
+              className="w-80 bg-gray-900/95 border-white/20 backdrop-blur-xl p-4"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Info className="w-4 h-4 text-primary" />
+                <h4 className="font-semibold text-foreground">О фильтрах</h4>
+              </div>
+              <div className="space-y-3 text-sm">
+                <div className="p-2 bg-green-500/10 rounded-lg border border-green-500/20">
+                  <p className="font-medium text-green-400 mb-1">Готовы к заказу</p>
+                  <p className="text-muted-foreground text-xs">Аккаунты прошли полный прогрев и готовы к использованию для заказов.</p>
+                </div>
+                <div className="p-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                  <p className="font-medium text-yellow-400 mb-1">Догрев</p>
+                  <p className="text-muted-foreground text-xs">Аккаунты в процессе подготовки. После завершения получат увеличенный лимит.</p>
+                </div>
+                <div className="p-2 bg-white/5 rounded-lg border border-white/10">
+                  <p className="font-medium text-foreground mb-1">Город</p>
+                  <p className="text-muted-foreground text-xs">Фильтрация по ГЕО аккаунта для получения доставки в нужный регион.</p>
+                </div>
+                <div className="p-2 bg-white/5 rounded-lg border border-white/10">
+                  <p className="font-medium text-foreground mb-1">Сплит</p>
+                  <p className="text-muted-foreground text-xs">Сортировка по максимальному лимиту заказа на аккаунте.</p>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
 
