@@ -359,7 +359,7 @@ export const AccountsPage: React.FC = () => {
       {/* Stats Row - Non-clickable */}
       <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[110]' : ''}`}>
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-gray-900/70 border border-white/15 backdrop-blur-xl">
+          <Card key={stat.label} className="glass-card">
             <CardContent className="p-5 py-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -382,7 +382,7 @@ export const AccountsPage: React.FC = () => {
               <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-72 bg-gray-900/70 border-white/15 backdrop-blur-xl p-3 text-sm">
+          <PopoverContent className="w-72 glass-card p-3 text-sm">
             <p className="text-muted-foreground leading-relaxed">
               Определитесь с выбором аккаунта: <span className="text-green-400 font-medium">быстрый старт</span> — гретые аккаунты готовые к заказу, <span className="text-yellow-400 font-medium">догрев</span> — покупают с целью получения высокого лимита.
             </p>
@@ -397,7 +397,7 @@ export const AccountsPage: React.FC = () => {
           className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] ${
             showReadyOnly 
               ? 'bg-green-500/20 border-green-500/50 ring-2 ring-green-500/30' 
-              : 'bg-black/40 border-white/10 hover:bg-black/50'
+              : 'glass-card hover:border-white/20'
           } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(true)}
         >
@@ -420,7 +420,7 @@ export const AccountsPage: React.FC = () => {
           className={`cursor-pointer transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] ${
             !showReadyOnly 
               ? 'bg-yellow-500/20 border-yellow-500/50 ring-2 ring-yellow-500/30' 
-              : 'bg-black/40 border-white/10 hover:bg-black/50'
+              : 'glass-card hover:border-white/20'
           } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
@@ -576,7 +576,7 @@ export const AccountsPage: React.FC = () => {
               className={`cursor-pointer transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] ${
                 isSelected 
                   ? 'bg-primary/20 border-primary ring-2 ring-primary/50' 
-                  : 'bg-black/30 border-white/20 hover:bg-black/40'
+                  : 'glass-card hover:border-white/20'
               }`}
               onClick={() => toggleAccountSelection(account.id)}
             >
