@@ -18,8 +18,10 @@ import {
   BookOpen,
   GraduationCap,
   X,
-  ChevronDown
+  ChevronDown,
+  HelpCircle
 } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
@@ -415,6 +417,23 @@ export const AccountsPage: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Account type hint */}
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-sm text-muted-foreground">Выбор особенности аккаунта</span>
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="w-5 h-5 rounded-full border border-muted-foreground/50 flex items-center justify-center hover:border-primary hover:text-primary transition-colors">
+              <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-72 bg-gray-900/95 border-white/20 backdrop-blur-xl p-3 text-sm">
+            <p className="text-muted-foreground leading-relaxed">
+              Определитесь с выбором аккаунта: <span className="text-green-400 font-medium">быстрый старт</span> — гретые аккаунты готовые к заказу, <span className="text-yellow-400 font-medium">догрев</span> — покупают с целью получения высокого лимита.
+            </p>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Active Filters - Always visible */}
