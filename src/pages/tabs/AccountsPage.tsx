@@ -18,10 +18,8 @@ import {
   BookOpen,
   GraduationCap,
   X,
-  ChevronRight,
-  Info
+  ChevronDown
 } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
@@ -357,7 +355,7 @@ export const AccountsPage: React.FC = () => {
       </AnimatePresence>
 
       {/* Stats Row - Non-clickable */}
-      <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[60]' : ''}`}>
+      <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[110]' : ''}`}>
         {stats.map((stat) => (
           <Card key={stat.label} className="bg-black/40 border border-white/10 backdrop-blur-sm">
             <CardContent className="p-5 py-6">
@@ -381,7 +379,7 @@ export const AccountsPage: React.FC = () => {
             showReadyOnly 
               ? 'bg-green-500/20 border-green-500/50 ring-2 ring-green-500/30' 
               : 'bg-black/40 border-white/10 hover:bg-black/50'
-          } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[60]' : ''}`}
+          } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(true)}
         >
           <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
@@ -404,7 +402,7 @@ export const AccountsPage: React.FC = () => {
             !showReadyOnly 
               ? 'bg-yellow-500/20 border-yellow-500/50 ring-2 ring-yellow-500/30' 
               : 'bg-black/40 border-white/10 hover:bg-black/50'
-          } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[60]' : ''}`}
+          } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
           <CardContent className="p-6 py-8">
@@ -420,7 +418,7 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Active Filters - Always visible */}
-      <div className={`p-4 bg-black/30 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[60]' : ''}`}>
+      <div className={`p-4 bg-black/30 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Активные фильтры:</span>
           <AnimatePresence mode="popLayout">
@@ -453,47 +451,28 @@ export const AccountsPage: React.FC = () => {
             ))}
           </AnimatePresence>
           
-          {/* Info popover with filter details */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="ml-auto p-1.5 rounded-full hover:bg-white/10 transition-colors group">
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent 
-              align="end" 
-              className="w-80 bg-gray-900/95 border-white/20 backdrop-blur-xl p-4"
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Info className="w-4 h-4 text-primary" />
-                <h4 className="font-semibold text-foreground">О фильтрах</h4>
-              </div>
-              <div className="space-y-3 text-sm">
-                <div className="p-2 bg-green-500/10 rounded-lg border border-green-500/20">
-                  <p className="font-medium text-green-400 mb-1">Готовы к заказу</p>
-                  <p className="text-muted-foreground text-xs">Аккаунты прошли полный прогрев и готовы к использованию для заказов.</p>
-                </div>
-                <div className="p-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                  <p className="font-medium text-yellow-400 mb-1">Догрев</p>
-                  <p className="text-muted-foreground text-xs">Аккаунты в процессе подготовки. После завершения получат увеличенный лимит.</p>
-                </div>
-                <div className="p-2 bg-white/5 rounded-lg border border-white/10">
-                  <p className="font-medium text-foreground mb-1">Город</p>
-                  <p className="text-muted-foreground text-xs">Фильтрация по ГЕО аккаунта для получения доставки в нужный регион.</p>
-                </div>
-                <div className="p-2 bg-white/5 rounded-lg border border-white/10">
-                  <p className="font-medium text-foreground mb-1">Сплит</p>
-                  <p className="text-muted-foreground text-xs">Сортировка по максимальному лимиту заказа на аккаунте.</p>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+          <ChevronDown className="w-4 h-4 text-muted-foreground ml-auto" />
         </div>
+        
+        {/* Filter description - always visible */}
+        <motion.div 
+          key={showReadyOnly ? 'ready' : 'warmup'}
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-3 pt-3 border-t border-white/10"
+        >
+          <p className={`text-sm ${showReadyOnly ? 'text-green-400/80' : 'text-yellow-400/80'}`}>
+            {showReadyOnly 
+              ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
+              : 'Догрев — аккаунты можно использовать для увеличения лимита.'
+            }
+          </p>
+        </motion.div>
       </div>
 
 
       {/* Filters */}
-      <div className={`flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[60]' : ''}`}>
+      <div className={`flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
@@ -569,7 +548,7 @@ export const AccountsPage: React.FC = () => {
       )}
 
       {/* Accounts Grid */}
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-500 ${currentHighlight === 'accounts' ? 'ring-2 ring-primary rounded-xl p-2 relative z-[60]' : ''}`}>
+      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-500 ${currentHighlight === 'accounts' ? 'ring-2 ring-primary rounded-xl p-2 relative z-[110]' : ''}`}>
         {filteredAccounts.map((account) => {
           const isSelected = selectedAccounts.includes(account.id);
           return (
