@@ -176,9 +176,9 @@
   .glass-card {
     background: linear-gradient(
       135deg,
-      rgba(17, 24, 39, 0.75) 0%,
-      rgba(17, 24, 39, 0.70) 50%,
-      rgba(17, 24, 39, 0.75) 100%
+      rgba(17, 24, 39, 0.45) 0%,
+      rgba(17, 24, 39, 0.40) 50%,
+      rgba(17, 24, 39, 0.45) 100%
     );
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(16px);
