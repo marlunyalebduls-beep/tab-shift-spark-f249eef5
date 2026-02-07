@@ -491,7 +491,7 @@ export const AccountsPage: React.FC = () => {
 
 
       {/* Filters */}
-      <div className={`flex flex-wrap items-center gap-4 p-4 bg-black/20 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
+      <div className={`flex flex-wrap items-center gap-4 p-4 glass-card rounded-lg transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
