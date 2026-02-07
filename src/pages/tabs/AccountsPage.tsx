@@ -394,7 +394,7 @@ export const AccountsPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Готовы к заказу */}
         <Card 
-          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] ${
+          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] min-h-[140px] ${
             showReadyOnly 
               ? 'bg-green-600/30 border-green-500/70 ring-2 ring-green-500/50' 
               : 'glass-card hover:border-white/20'
@@ -404,34 +404,70 @@ export const AccountsPage: React.FC = () => {
           <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
             рекомендуется
           </div>
-          <CardContent className="p-6 py-8">
+          <CardContent className="p-6 py-8 h-full flex flex-col justify-between">
             <div className="flex items-start gap-4">
               <CheckCircle className="w-8 h-8 text-green-400 flex-shrink-0" />
               <div>
                 <h3 className="text-xl font-bold text-foreground">Готовы к заказу</h3>
                 <p className="text-sm text-muted-foreground mt-2">Аккаунты для быстрого старта, готовы к заказу</p>
+                <p className="text-lg font-semibold text-green-400 mt-3">
+                  {mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length} аккаунтов
+                </p>
               </div>
             </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button 
+                  className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/50 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 glass-card p-3 text-sm">
+                <p className="text-muted-foreground leading-relaxed">
+                  Подробная информация о готовых аккаунтах будет здесь.
+                </p>
+              </PopoverContent>
+            </Popover>
           </CardContent>
         </Card>
 
         {/* Догрев */}
         <Card 
-          className={`cursor-pointer transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] ${
+          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] min-h-[140px] ${
             !showReadyOnly 
               ? 'bg-yellow-600/30 border-yellow-500/70 ring-2 ring-yellow-500/50' 
               : 'glass-card hover:border-white/20'
           } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
-          <CardContent className="p-6 py-8">
+          <CardContent className="p-6 py-8 h-full flex flex-col justify-between">
             <div className="flex items-start gap-4">
               <Zap className="w-8 h-8 text-yellow-400 flex-shrink-0" />
               <div>
                 <h3 className="text-xl font-bold text-foreground">Догрев</h3>
                 <p className="text-sm text-muted-foreground mt-2">Аккаунты для догрева с целью получения большего лимита</p>
+                <p className="text-lg font-semibold text-yellow-400 mt-3">
+                  {mockAccounts.filter(acc => acc.emulation_status.includes('Предварительный') || acc.emulation_status.includes('ГЕО')).length} аккаунтов
+                </p>
               </div>
             </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button 
+                  className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/50 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 glass-card p-3 text-sm">
+                <p className="text-muted-foreground leading-relaxed">
+                  Подробная информация о догреве будет здесь.
+                </p>
+              </PopoverContent>
+            </Popover>
           </CardContent>
         </Card>
       </div>
