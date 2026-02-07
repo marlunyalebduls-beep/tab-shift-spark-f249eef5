@@ -359,7 +359,7 @@ export const AccountsPage: React.FC = () => {
       {/* Stats Row - Non-clickable */}
       <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[110]' : ''}`}>
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-black/40 border border-white/10 backdrop-blur-sm">
+          <Card key={stat.label} className="bg-gray-900/70 border border-white/15 backdrop-blur-xl">
             <CardContent className="p-5 py-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -382,7 +382,7 @@ export const AccountsPage: React.FC = () => {
               <HelpCircle className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-72 bg-gray-900/95 border-white/20 backdrop-blur-xl p-3 text-sm">
+          <PopoverContent className="w-72 bg-gray-900/70 border-white/15 backdrop-blur-xl p-3 text-sm">
             <p className="text-muted-foreground leading-relaxed">
               Определитесь с выбором аккаунта: <span className="text-green-400 font-medium">быстрый старт</span> — гретые аккаунты готовые к заказу, <span className="text-yellow-400 font-medium">догрев</span> — покупают с целью получения высокого лимита.
             </p>
