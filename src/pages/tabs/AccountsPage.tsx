@@ -478,14 +478,20 @@ export const AccountsPage: React.FC = () => {
           key={showReadyOnly ? 'ready' : 'warmup'}
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-3 px-4 py-3 rounded-lg bg-gray-900/70 border border-white/10"
+          className={`mt-3 px-4 py-3 rounded-lg border ${
+            showReadyOnly 
+              ? 'bg-green-500/15 border-green-500/30' 
+              : 'bg-yellow-500/15 border-yellow-500/30'
+          }`}
         >
-          <p className={`text-sm font-medium ${showReadyOnly ? 'text-green-400' : 'text-yellow-400'}`}>
-            {showReadyOnly 
-              ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
-              : 'Догрев — аккаунты можно использовать для увеличения лимита.'
-            }
-          </p>
+          <span className="inline-block px-3 py-1.5 bg-gray-900/80 rounded-md">
+            <span className="text-sm font-medium text-white">
+              {showReadyOnly 
+                ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
+                : 'Догрев — аккаунты можно использовать для увеличения лимита.'
+              }
+            </span>
+          </span>
         </motion.div>
       </div>
 
