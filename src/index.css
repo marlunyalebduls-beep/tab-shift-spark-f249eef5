@@ -181,8 +181,6 @@
       rgba(17, 24, 39, 0.45) 100%
     );
     border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
   }
 
   .glass-modal {
