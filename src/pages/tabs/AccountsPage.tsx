@@ -22,6 +22,7 @@ import {
   HelpCircle
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import splitLogo from '@/assets/split-logo-icon.png';
 
 type SortOrder = 'none' | 'asc' | 'desc';
 
@@ -41,12 +42,12 @@ interface Account {
 }
 
 const mockAccounts: Account[] = [
-  { id: 'acc_001', name: 'Аккаунт #1', username: '@user_001', city: 'Москва', split: 50000, price: 1500, emulation_status: 'Готов к заказу - пассивный прогрев' },
-  { id: 'acc_002', name: 'Аккаунт #2', username: '@user_002', city: 'Санкт-Петербург', split: 75000, price: 2000, emulation_status: 'Прогрев аккаунта на ГЕО' },
-  { id: 'acc_003', name: 'Аккаунт #3', username: '@user_003', city: 'Москва', split: 100000, price: 2500, emulation_status: 'Готов к заказу - пассивный прогрев' },
-  { id: 'acc_004', name: 'Аккаунт #4', username: '@user_004', city: 'Казань', split: 120000, price: 3000, emulation_status: 'Предварительный прогрев' },
-  { id: 'acc_005', name: 'Аккаунт #5', username: '@user_005', city: 'Неизвестно', split: 80000, price: 1800, emulation_status: 'Предварительный прогрев' },
-  { id: 'acc_006', name: 'Аккаунт #6', username: '@user_006', city: 'Новосибирск', split: 60000, price: 1700, emulation_status: 'Готов к заказу - пассивный прогрев' },
+  { id: '59FgfkdFG-5124jf4-F54Ggt5', name: 'Дмитрий Смирнов', username: '@dmitry_s', city: 'Москва', split: 50000, price: 5000, emulation_status: 'Готов к заказу - легкий прогрев' },
+  { id: '72HjklMN-8234op5-Q89Rtu7', name: 'Анна Петрова', username: '@anna_p', city: 'Санкт-Петербург', split: 75000, price: 6500, emulation_status: 'Догрев - Активный прогрев' },
+  { id: '31AbcdEF-4567gh8-H12Ijk3', name: 'Иван Козлов', username: '@ivan_k', city: 'Москва', split: 100000, price: 8000, emulation_status: 'Готов к заказу - легкий прогрев' },
+  { id: '45XyzWV-9012rs3-S56Tuv4', name: 'Елена Волкова', username: '@elena_v', city: 'Казань', split: 120000, price: 9500, emulation_status: 'Догрев - Активный прогрев' },
+  { id: '88QwrTY-3456mn7-M90Nop8', name: 'Сергей Новиков', username: '@sergey_n', city: 'Неизвестно', split: 80000, price: 7000, emulation_status: 'Догрев - Активный прогрев' },
+  { id: '63PklBN-7890cd1-C23Def6', name: 'Мария Соколова', username: '@maria_s', city: 'Новосибирск', split: 60000, price: 5500, emulation_status: 'Готов к заказу - легкий прогрев' },
 ];
 
 const formatCurrency = (value: number) => `${value.toLocaleString('ru-RU')} ₽`;
@@ -608,42 +609,34 @@ export const AccountsPage: React.FC = () => {
       <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 transition-all duration-500 ${currentHighlight === 'accounts' ? 'ring-2 ring-primary rounded-xl p-2 relative z-[110]' : ''}`}>
         {filteredAccounts.map((account) => {
           const isSelected = selectedAccounts.includes(account.id);
+          const isReady = account.emulation_status.includes('Готов');
+          
           return (
             <Card 
               key={account.id}
-              className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-[#0a1628]/80 border-[#1e3a5f]/60 hover:border-[#2a5a8f]/80 ${
+              className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] glass-card ${
                 isSelected 
                   ? 'border-primary ring-2 ring-primary/50' 
                   : ''
               }`}
               onClick={() => toggleAccountSelection(account.id)}
             >
-              <CardContent className="p-5 space-y-3">
-                {/* Header with name and checkbox */}
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <div className="flex items-center gap-2">
-                    <Checkbox checked={isSelected} className="border-white/30" />
-                    <span className="text-foreground font-semibold">{account.name}</span>
-                  </div>
-                  {account.emulation_status.includes('Готов') && (
-                    <CheckCircle className="w-5 h-5 text-green-400" />
-                  )}
-                </div>
+              <CardContent className="p-4 space-y-2.5">
+                {/* Name */}
+                <h4 className="text-foreground font-semibold text-base">{account.name}</h4>
 
                 {/* ID */}
-                <div className="space-y-1">
-                  <span className="text-xs text-muted-foreground">ID:</span>
-                  <p className="text-foreground/80 font-mono text-xs truncate">{account.id}</p>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-muted-foreground text-sm">ID:</span>
+                  <span className="text-foreground font-mono text-sm truncate">{account.id}</span>
                 </div>
                 
-                {/* Split with icon and badge */}
+                {/* Split */}
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-sm">Сплит:</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
-                    </div>
-                    <span className="px-3 py-1 bg-[#0d2137] border border-[#1e4a6f] rounded text-foreground font-semibold text-sm">
+                  <span className="text-muted-foreground text-sm">Сплит</span>
+                  <div className="flex items-center gap-1.5">
+                    <img src={splitLogo} alt="Split" className="w-4 h-4" />
+                    <span className="px-2.5 py-1 bg-gray-600/50 rounded text-foreground font-medium text-sm">
                       {account.split.toLocaleString('ru-RU')} RUB
                     </span>
                   </div>
@@ -652,28 +645,30 @@ export const AccountsPage: React.FC = () => {
                 {/* Price */}
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground text-sm">Цена:</span>
-                  <span className="text-foreground font-medium">{formatCurrency(account.price)}</span>
+                  <span className="text-foreground font-medium text-sm">{account.price.toLocaleString('ru-RU')} RUB</span>
                 </div>
                 
                 {/* City */}
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-sm">Город:</span>
+                  <span className="text-muted-foreground text-sm">Город</span>
                   <div className="flex items-center gap-1.5">
                     <MapPin className="w-4 h-4 text-cyan-400" />
-                    <span className="text-cyan-400 text-sm">
+                    <span className="text-foreground text-sm">
                       {account.city === 'Неизвестно' ? 'Любой город' : account.city}
                     </span>
                   </div>
                 </div>
                 
-                {/* Status badge at bottom */}
-                <div className="pt-2">
-                  <span className="text-muted-foreground text-sm">Статус:</span>
-                  <div className="mt-2">
-                    <span className="inline-block px-3 py-1.5 border border-green-500/50 rounded text-green-400 text-xs font-medium">
-                      {account.emulation_status}
-                    </span>
-                  </div>
+                {/* Status */}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-muted-foreground text-sm">Статус</span>
+                  <span className={`px-2.5 py-1 border rounded text-xs font-medium ${
+                    isReady 
+                      ? 'border-green-500/60 text-green-400' 
+                      : 'border-yellow-500/60 text-yellow-400'
+                  }`}>
+                    {account.emulation_status}
+                  </span>
                 </div>
               </CardContent>
             </Card>
