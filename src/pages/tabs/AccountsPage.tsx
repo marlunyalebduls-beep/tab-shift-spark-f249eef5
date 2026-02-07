@@ -396,7 +396,7 @@ export const AccountsPage: React.FC = () => {
         <Card 
           className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] ${
             showReadyOnly 
-              ? 'bg-green-500/20 border-green-500/50 ring-2 ring-green-500/30' 
+              ? 'bg-green-600/30 border-green-500/70 ring-2 ring-green-500/50' 
               : 'glass-card hover:border-white/20'
           } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(true)}
@@ -419,7 +419,7 @@ export const AccountsPage: React.FC = () => {
         <Card 
           className={`cursor-pointer transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] ${
             !showReadyOnly 
-              ? 'bg-yellow-500/20 border-yellow-500/50 ring-2 ring-yellow-500/30' 
+              ? 'bg-yellow-600/30 border-yellow-500/70 ring-2 ring-yellow-500/50' 
               : 'glass-card hover:border-white/20'
           } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
@@ -473,19 +473,25 @@ export const AccountsPage: React.FC = () => {
           <ChevronDown className="w-4 h-4 text-muted-foreground ml-auto" />
         </div>
         
-        {/* Filter description - always visible */}
+        {/* Filter description - color block like static tabs */}
         <motion.div 
           key={showReadyOnly ? 'ready' : 'warmup'}
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-3 pt-3 border-t border-white/10"
+          className={`mt-3 px-4 py-3 rounded-lg ${
+            showReadyOnly 
+              ? 'bg-green-600/30 border border-green-500/50' 
+              : 'bg-yellow-600/30 border border-yellow-500/50'
+          }`}
         >
-          <p className={`text-sm ${showReadyOnly ? 'text-green-400/80' : 'text-yellow-400/80'}`}>
-            {showReadyOnly 
-              ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
-              : 'Догрев — аккаунты можно использовать для увеличения лимита.'
-            }
-          </p>
+          <div className="inline-block px-3 py-1 bg-black/60 rounded-md">
+            <p className={`text-sm font-medium ${showReadyOnly ? 'text-green-400' : 'text-yellow-400'}`}>
+              {showReadyOnly 
+                ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
+                : 'Догрев — аккаунты можно использовать для увеличения лимита.'
+              }
+            </p>
+          </div>
         </motion.div>
       </div>
 
