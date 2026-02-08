@@ -169,7 +169,10 @@ export const OrderPage: React.FC = () => {
                         <div>
                           <p className="text-xs text-muted-foreground mb-1">Полная цена</p>
                           <p className="text-xl font-bold text-foreground">
-                            ₽{parsedProduct.price.toLocaleString('ru-RU')}
+                            {parsedProduct.price !== null 
+                              ? `₽${parsedProduct.price.toLocaleString('ru-RU')}`
+                              : 'Цена не найдена'
+                            }
                           </p>
                         </div>
                         <div className="p-3 rounded-lg bg-primary/20 border border-primary/30">
@@ -178,7 +181,10 @@ export const OrderPage: React.FC = () => {
                             1/4 от цены (ваш взнос)
                           </p>
                           <p className="text-xl font-bold text-primary">
-                            ₽{parsedProduct.quarterPrice.toLocaleString('ru-RU')}
+                            {parsedProduct.quarterPrice !== null 
+                              ? `₽${parsedProduct.quarterPrice.toLocaleString('ru-RU')}`
+                              : '—'
+                            }
                           </p>
                         </div>
                       </div>
@@ -243,7 +249,7 @@ export const OrderPage: React.FC = () => {
               >
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 Создать заказ
-                {parsedProduct && (
+                {parsedProduct && parsedProduct.quarterPrice !== null && (
                   <span className="ml-2 opacity-80">
                     — ₽{parsedProduct.quarterPrice.toLocaleString('ru-RU')}
                   </span>
