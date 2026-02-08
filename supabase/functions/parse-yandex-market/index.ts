@@ -5,6 +5,50 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+// Allowed Yandex Market hostnames
+const ALLOWED_HOSTNAMES = [
+  'market.yandex.ru',
+  'market.yandex.com',
+  'pokupki.market.yandex.ru',
+  'm.market.yandex.ru',
+];
+
+/**
+ * Validates that the URL is a proper Yandex Market URL
+ * Prevents SSRF attacks by strictly validating hostname
+ */
+function validateYandexMarketUrl(urlString: string): { valid: boolean; error?: string; url?: URL } {
+  // Check if it's a string
+  if (typeof urlString !== 'string' || urlString.trim().length === 0) {
+    return { valid: false, error: 'URL обязателен' };
+  }
+
+  // Try to parse the URL
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(urlString.trim());
+  } catch {
+    return { valid: false, error: 'Неверный формат URL' };
+  }
+
+  // Only allow HTTPS
+  if (parsedUrl.protocol !== 'https:') {
+    return { valid: false, error: 'Разрешены только HTTPS ссылки' };
+  }
+
+  // Validate hostname against whitelist
+  const hostname = parsedUrl.hostname.toLowerCase();
+  const isAllowed = ALLOWED_HOSTNAMES.some(allowed => 
+    hostname === allowed || hostname.endsWith('.' + allowed)
+  );
+
+  if (!isAllowed) {
+    return { valid: false, error: 'Только ссылки с Яндекс Маркета поддерживаются' };
+  }
+
+  return { valid: true, url: parsedUrl };
+}
+
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -12,33 +56,28 @@ serve(async (req) => {
   }
 
   try {
-    const { url } = await req.json();
+    const body = await req.json();
+    const { url } = body;
 
-    if (!url) {
+    // Validate URL input
+    const validation = validateYandexMarketUrl(url);
+    if (!validation.valid) {
       return new Response(
-        JSON.stringify({ success: false, error: 'URL is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // Validate Yandex Market URL
-    if (!url.includes('market.yandex')) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Только ссылки с Яндекс Маркета поддерживаются' }),
+        JSON.stringify({ success: false, error: validation.error }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
     const apiKey = Deno.env.get('FIRECRAWL_API_KEY');
     if (!apiKey) {
-      console.error('FIRECRAWL_API_KEY not configured');
+      console.error('[INTERNAL] Scraper API key not configured');
       return new Response(
-        JSON.stringify({ success: false, error: 'Firecrawl не настроен' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'Сервис временно недоступен' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('Scraping Yandex Market URL:', url);
+    console.log('[INFO] Processing URL:', validation.url?.hostname);
 
     // Scrape the page with Firecrawl
     const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
@@ -48,20 +87,20 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        url: url,
+        url: validation.url?.href,
         formats: ['markdown', 'html'],
         onlyMainContent: true,
-        waitFor: 3000, // Wait for dynamic content to load
+        waitFor: 3000,
       }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Firecrawl API error:', data);
+      console.error('[INTERNAL] Scraper error:', response.status);
       return new Response(
-        JSON.stringify({ success: false, error: data.error || 'Ошибка при парсинге страницы' }),
-        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        JSON.stringify({ success: false, error: 'Не удалось загрузить страницу. Попробуйте позже.' }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -70,14 +109,14 @@ serve(async (req) => {
     const html = content.html || '';
     const metadata = content.metadata || {};
 
-    console.log('Scraped content length:', markdown.length);
+    console.log('[INFO] Content received, length:', markdown.length);
 
     // Extract product information from the scraped content
     let title = metadata.title || '';
     let price: number | null = null;
     let image: string | null = null;
 
-    // Clean up title - remove "— купить в интернет-магазине OZON" or similar suffixes
+    // Clean up title - remove common suffixes
     title = title
       .replace(/\s*—\s*купить.*$/i, '')
       .replace(/\s*\|\s*Яндекс.*$/i, '')
@@ -85,7 +124,6 @@ serve(async (req) => {
       .trim();
 
     // Try to extract price from markdown content
-    // Look for patterns like "1 234 ₽", "1234₽", "1 234 руб"
     const pricePatterns = [
       /(\d[\d\s]*)\s*₽/g,
       /(\d[\d\s]*)\s*руб/gi,
@@ -96,11 +134,9 @@ serve(async (req) => {
     for (const pattern of pricePatterns) {
       const matches = [...markdown.matchAll(pattern)];
       if (matches.length > 0) {
-        // Get the first reasonable price (usually the main product price)
         for (const match of matches) {
           const priceStr = match[1].replace(/\s/g, '');
           const parsedPrice = parseInt(priceStr, 10);
-          // Filter out unreasonable prices (too small or too large)
           if (parsedPrice >= 100 && parsedPrice <= 10000000) {
             price = parsedPrice;
             break;
@@ -116,7 +152,6 @@ serve(async (req) => {
     } else if (metadata.image) {
       image = metadata.image;
     } else {
-      // Try to find image in HTML
       const imgPatterns = [
         /og:image"?\s+content="([^"]+)"/i,
         /<img[^>]+src="(https:\/\/avatars\.mds\.yandex\.net[^"]+)"/i,
@@ -161,7 +196,7 @@ serve(async (req) => {
       },
     };
 
-    console.log('Parsed product:', result.product);
+    console.log('[INFO] Product parsed successfully');
 
     return new Response(
       JSON.stringify(result),
@@ -169,10 +204,9 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error parsing Yandex Market:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+    console.error('[INTERNAL] Unexpected error:', error);
     return new Response(
-      JSON.stringify({ success: false, error: errorMessage }),
+      JSON.stringify({ success: false, error: 'Не удалось обработать запрос' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
