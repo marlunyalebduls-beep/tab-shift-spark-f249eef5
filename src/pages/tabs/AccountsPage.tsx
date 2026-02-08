@@ -360,7 +360,7 @@ export const AccountsPage: React.FC = () => {
       {/* Stats Row - Non-clickable */}
       <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[110]' : ''}`}>
         {stats.map((stat) => (
-          <Card key={stat.label} className="glass-card">
+          <Card key={stat.label} className="bg-[#1a1f2e]/80 border-[#2a3142]/60">
             <CardContent className="p-5 py-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -392,89 +392,59 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Category Cards - Clickable */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Готовы к заказу */}
         <Card 
-          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] min-h-[140px] ${
+          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] ${
             showReadyOnly 
               ? 'bg-green-600/30 border-green-500/70 ring-2 ring-green-500/50' 
-              : 'glass-card hover:border-white/20'
+              : 'bg-[#1a1f2e]/80 border-[#2a3142]/60 hover:border-white/20'
           } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(true)}
         >
-          <div className="absolute top-2 right-2 px-3 py-1 bg-gray-600/50 border border-gray-500/50 rounded-full text-xs text-gray-300 font-medium">
+          <div className="absolute top-2 right-2 px-2.5 py-0.5 bg-gray-600/50 border border-gray-500/50 rounded-full text-[10px] text-gray-300 font-medium">
             рекомендуется
           </div>
-          <CardContent className="p-6 py-8 h-full flex flex-col justify-between">
-            <div className="flex items-start gap-4">
-              <CheckCircle className="w-8 h-8 text-green-400 flex-shrink-0" />
+          <CardContent className="p-4 py-5">
+            <div className="flex items-start gap-3">
+              <CheckCircle className={`w-6 h-6 flex-shrink-0 ${showReadyOnly ? 'text-green-400' : 'text-muted-foreground'}`} />
               <div>
-                <h3 className="text-xl font-bold text-foreground">Готовы к заказу</h3>
-                <p className="text-sm text-muted-foreground mt-2">Аккаунты для быстрого старта, готовы к заказу</p>
-                <p className="text-lg font-semibold text-green-400 mt-3">
-                  {mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length} аккаунтов
+                <h3 className={`text-base font-bold ${showReadyOnly ? 'text-green-400' : 'text-foreground'}`}>Готовы к заказу</h3>
+                <p className={`text-xs mt-1 ${showReadyOnly ? 'text-green-400/80' : 'text-muted-foreground'}`}>Аккаунты для быстрого старта</p>
+                <p className={`text-sm font-medium mt-2 ${showReadyOnly ? 'text-green-400' : 'text-muted-foreground'}`}>
+                  Доступно: {mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length}
                 </p>
               </div>
             </div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button 
-                  className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/50 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 glass-card p-3 text-sm">
-                <p className="text-muted-foreground leading-relaxed">
-                  Подробная информация о готовых аккаунтах будет здесь.
-                </p>
-              </PopoverContent>
-            </Popover>
           </CardContent>
         </Card>
 
         {/* Догрев */}
         <Card 
-          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.02] active:scale-[0.98] min-h-[140px] ${
+          className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] ${
             !showReadyOnly 
               ? 'bg-yellow-600/30 border-yellow-500/70 ring-2 ring-yellow-500/50' 
-              : 'glass-card hover:border-white/20'
+              : 'bg-[#1a1f2e]/80 border-[#2a3142]/60 hover:border-white/20'
           } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
-          <CardContent className="p-6 py-8 h-full flex flex-col justify-between">
-            <div className="flex items-start gap-4">
-              <Zap className="w-8 h-8 text-yellow-400 flex-shrink-0" />
+          <CardContent className="p-4 py-5">
+            <div className="flex items-start gap-3">
+              <Zap className={`w-6 h-6 flex-shrink-0 ${!showReadyOnly ? 'text-yellow-400' : 'text-muted-foreground'}`} />
               <div>
-                <h3 className="text-xl font-bold text-foreground">Догрев</h3>
-                <p className="text-sm text-muted-foreground mt-2">Аккаунты для догрева с целью получения большего лимита</p>
-                <p className="text-lg font-semibold text-yellow-400 mt-3">
-                  {mockAccounts.filter(acc => acc.emulation_status.includes('Предварительный') || acc.emulation_status.includes('ГЕО')).length} аккаунтов
+                <h3 className={`text-base font-bold ${!showReadyOnly ? 'text-yellow-400' : 'text-foreground'}`}>Догрев</h3>
+                <p className={`text-xs mt-1 ${!showReadyOnly ? 'text-yellow-400/80' : 'text-muted-foreground'}`}>Аккаунты для увеличения лимита</p>
+                <p className={`text-sm font-medium mt-2 ${!showReadyOnly ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                  Доступно: {mockAccounts.filter(acc => !acc.emulation_status.includes('Готов')).length}
                 </p>
               </div>
             </div>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button 
-                  className="absolute bottom-3 right-3 w-6 h-6 rounded-full border border-muted-foreground/50 flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <HelpCircle className="w-4 h-4 text-muted-foreground" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64 glass-card p-3 text-sm">
-                <p className="text-muted-foreground leading-relaxed">
-                  Подробная информация о догреве будет здесь.
-                </p>
-              </PopoverContent>
-            </Popover>
           </CardContent>
         </Card>
       </div>
 
       {/* Active Filters - Always visible */}
-      <div className={`p-4 bg-black/30 rounded-lg border border-white/10 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
+      <div className={`p-4 bg-[#1a1f2e]/80 rounded-lg border border-[#2a3142]/60 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm text-muted-foreground">Активные фильтры:</span>
           <AnimatePresence mode="popLayout">
@@ -515,7 +485,7 @@ export const AccountsPage: React.FC = () => {
           key={showReadyOnly ? 'ready' : 'warmup'}
           initial={{ opacity: 0, y: -5 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-3 px-4 py-3 rounded-lg glass-card"
+          className="mt-3 px-4 py-3 rounded-lg bg-[#1a1f2e]/60 border border-[#2a3142]/40"
         >
           <span className="inline-block px-3 py-1.5 bg-black/80 rounded-md">
             <span className="text-sm font-medium text-white">
@@ -530,7 +500,7 @@ export const AccountsPage: React.FC = () => {
 
 
       {/* Filters */}
-      <div className={`flex flex-wrap items-center gap-4 p-4 glass-card rounded-lg transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
+      <div className={`flex flex-wrap items-center gap-4 p-4 bg-[#1a1f2e]/80 border border-[#2a3142]/60 rounded-lg transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
@@ -614,29 +584,26 @@ export const AccountsPage: React.FC = () => {
           return (
             <Card 
               key={account.id}
-              className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] glass-card ${
+              className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-[#1a1f2e]/80 border-[#2a3142]/60 ${
                 isSelected 
                   ? 'border-primary ring-2 ring-primary/50' 
                   : ''
               }`}
               onClick={() => toggleAccountSelection(account.id)}
             >
-              <CardContent className="p-4 space-y-2.5">
-                {/* Name */}
-                <h4 className="text-foreground font-semibold text-base">{account.name}</h4>
-
-                {/* ID */}
-                <div className="flex items-center gap-1.5">
-                  <span className="text-muted-foreground text-sm">ID:</span>
-                  <span className="text-foreground font-mono text-sm truncate">{account.id}</span>
+              <CardContent className="p-4 space-y-2">
+                {/* Name + ID row */}
+                <div className="flex items-start justify-between gap-2">
+                  <h4 className="text-foreground font-semibold text-sm">{account.name}</h4>
+                  <span className="text-muted-foreground/70 font-mono text-[10px] text-right flex-shrink-0 max-w-[100px] truncate">{account.id}</span>
                 </div>
                 
                 {/* Split */}
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-sm">Сплит</span>
+                  <span className="text-muted-foreground text-xs">Сплит</span>
                   <div className="flex items-center gap-1.5">
-                    <img src={splitLogo} alt="Split" className="w-4 h-4" />
-                    <span className="px-2.5 py-1 bg-gray-600/50 rounded text-foreground font-medium text-sm">
+                    <img src={splitLogo} alt="Split" className="w-3.5 h-3.5" />
+                    <span className="px-2 py-0.5 bg-gray-600/50 rounded-full text-foreground font-medium text-xs">
                       {account.split.toLocaleString('ru-RU')} RUB
                     </span>
                   </div>
@@ -644,25 +611,25 @@ export const AccountsPage: React.FC = () => {
 
                 {/* Price */}
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-sm">Цена:</span>
-                  <span className="text-foreground font-medium text-sm">{account.price.toLocaleString('ru-RU')} RUB</span>
+                  <span className="text-muted-foreground text-xs">Цена:</span>
+                  <span className="text-foreground font-medium text-xs">{account.price.toLocaleString('ru-RU')} RUB</span>
                 </div>
                 
                 {/* City */}
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-sm">Город</span>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-cyan-400" />
-                    <span className="text-foreground text-sm">
+                  <span className="text-muted-foreground text-xs">Город</span>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+                    <span className="text-foreground text-xs">
                       {account.city === 'Неизвестно' ? 'Любой город' : account.city}
                     </span>
                   </div>
                 </div>
                 
                 {/* Status */}
-                <div className="flex items-center justify-between pt-1">
-                  <span className="text-muted-foreground text-sm">Статус</span>
-                  <span className={`px-2.5 py-1 border rounded text-xs font-medium ${
+                <div className="flex items-center justify-between pt-0.5">
+                  <span className="text-muted-foreground text-xs">Статус</span>
+                  <span className={`px-2 py-0.5 border rounded-full text-[10px] font-medium ${
                     isReady 
                       ? 'border-green-500/60 text-green-400' 
                       : 'border-yellow-500/60 text-yellow-400'
