@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,9 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <div className="relative min-h-full">
-      {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      <AnimatePresence>
+        {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      </AnimatePresence>
 
       <motion.div 
         className="space-y-6"

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -156,7 +156,9 @@ export const ChatPage: React.FC = () => {
 
   return (
     <div className="relative h-[calc(100vh-200px)] flex flex-col">
-      {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      <AnimatePresence>
+        {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      </AnimatePresence>
 
       {/* Header */}
       <Card className="bg-black/30 border border-white/20 backdrop-blur-sm mb-4">

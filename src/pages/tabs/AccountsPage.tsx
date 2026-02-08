@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { 
   Users, 
@@ -19,7 +18,9 @@ import {
   GraduationCap,
   X,
   ChevronDown,
-  HelpCircle
+  ChevronUp,
+  HelpCircle,
+  Globe
 } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import splitLogo from '@/assets/split-logo-icon.png';
@@ -118,6 +119,7 @@ export const AccountsPage: React.FC = () => {
   const [showGlossary, setShowGlossary] = useState<boolean>(false);
   const [showTutorial, setShowTutorial] = useState<boolean>(false);
   const [tutorialStep, setTutorialStep] = useState<number>(0);
+  const [filtersExpanded, setFiltersExpanded] = useState<boolean>(true);
 
   // Check if tutorial should be shown (only once per session)
   useEffect(() => {
@@ -246,12 +248,12 @@ export const AccountsPage: React.FC = () => {
       <AnimatePresence>
         {showTutorial && (
           <>
-            {/* Overlay backdrop - pointer-events-none so clicks pass to dialog */}
+            {/* Overlay backdrop - pointer-events-auto to block all clicks */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] bg-black/60 pointer-events-none" 
+              className="fixed inset-0 z-[100] bg-black/60 pointer-events-auto" 
             />
             
             {/* Tutorial Dialog - higher z-index than overlay */}
@@ -360,7 +362,7 @@ export const AccountsPage: React.FC = () => {
       {/* Stats Row - Non-clickable */}
       <div className={`grid grid-cols-3 gap-6 transition-all duration-500 ${currentHighlight === 'stats' ? 'ring-2 ring-primary rounded-xl relative z-[110]' : ''}`}>
         {stats.map((stat) => (
-          <Card key={stat.label} className="bg-[#1a1f2e]/80 border-[#2a3142]/60">
+          <Card key={stat.label} className="bg-gradient-to-br from-[#1a1f2e]/60 to-[#141820]/40 border-2 border-[#2a3142]/50 backdrop-blur-sm">
             <CardContent className="p-5 py-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -397,21 +399,21 @@ export const AccountsPage: React.FC = () => {
         <Card 
           className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] ${
             showReadyOnly 
-              ? 'bg-green-600/30 border-green-500/70 ring-2 ring-green-500/50' 
-              : 'bg-[#1a1f2e]/80 border-[#2a3142]/60 hover:border-white/20'
+              ? 'bg-green-600/30 border-2 border-green-500/70 ring-2 ring-green-500/50' 
+              : 'bg-gradient-to-br from-[#1a1f2e]/60 to-[#141820]/40 border-2 border-[#2a3142]/50 hover:border-white/20'
           } ${currentHighlight === 'ready' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(true)}
         >
           <div className="absolute top-2 right-2 px-2.5 py-0.5 bg-gray-600/50 border border-gray-500/50 rounded-full text-[10px] text-gray-300 font-medium">
             рекомендуется
           </div>
-          <CardContent className="p-4 py-5">
+          <CardContent className="p-4 py-6">
             <div className="flex items-start gap-3">
               <CheckCircle className={`w-6 h-6 flex-shrink-0 ${showReadyOnly ? 'text-green-400' : 'text-muted-foreground'}`} />
               <div>
                 <h3 className={`text-base font-bold ${showReadyOnly ? 'text-green-400' : 'text-foreground'}`}>Готовы к заказу</h3>
                 <p className={`text-xs mt-1 ${showReadyOnly ? 'text-green-400/80' : 'text-muted-foreground'}`}>Аккаунты для быстрого старта</p>
-                <p className={`text-sm font-medium mt-2 ${showReadyOnly ? 'text-green-400' : 'text-muted-foreground'}`}>
+                <p className={`text-sm font-medium mt-3 ${showReadyOnly ? 'text-green-400' : 'text-muted-foreground'}`}>
                   Доступно: {mockAccounts.filter(acc => acc.emulation_status.includes('Готов')).length}
                 </p>
               </div>
@@ -423,18 +425,18 @@ export const AccountsPage: React.FC = () => {
         <Card 
           className={`cursor-pointer transition-all duration-500 relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] ${
             !showReadyOnly 
-              ? 'bg-yellow-600/30 border-yellow-500/70 ring-2 ring-yellow-500/50' 
-              : 'bg-[#1a1f2e]/80 border-[#2a3142]/60 hover:border-white/20'
+              ? 'bg-yellow-600/30 border-2 border-yellow-500/70 ring-2 ring-yellow-500/50' 
+              : 'bg-gradient-to-br from-[#1a1f2e]/60 to-[#141820]/40 border-2 border-[#2a3142]/50 hover:border-white/20'
           } ${currentHighlight === 'warmup' ? 'ring-2 ring-primary relative z-[110]' : ''}`}
           onClick={() => setShowReadyOnly(false)}
         >
-          <CardContent className="p-4 py-5">
+          <CardContent className="p-4 py-6">
             <div className="flex items-start gap-3">
               <Zap className={`w-6 h-6 flex-shrink-0 ${!showReadyOnly ? 'text-yellow-400' : 'text-muted-foreground'}`} />
               <div>
                 <h3 className={`text-base font-bold ${!showReadyOnly ? 'text-yellow-400' : 'text-foreground'}`}>Догрев</h3>
                 <p className={`text-xs mt-1 ${!showReadyOnly ? 'text-yellow-400/80' : 'text-muted-foreground'}`}>Аккаунты для увеличения лимита</p>
-                <p className={`text-sm font-medium mt-2 ${!showReadyOnly ? 'text-yellow-400' : 'text-muted-foreground'}`}>
+                <p className={`text-sm font-medium mt-3 ${!showReadyOnly ? 'text-yellow-400' : 'text-muted-foreground'}`}>
                   Доступно: {mockAccounts.filter(acc => !acc.emulation_status.includes('Готов')).length}
                 </p>
               </div>
@@ -444,63 +446,92 @@ export const AccountsPage: React.FC = () => {
       </div>
 
       {/* Active Filters - Always visible */}
-      <div className={`p-4 bg-[#1a1f2e]/80 rounded-lg border border-[#2a3142]/60 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">Активные фильтры:</span>
-          <AnimatePresence mode="popLayout">
-            {activeFilters.map((filter, index) => (
-              <motion.div
-                key={`${filter.label}-${filter.value}`}
-                initial={{ opacity: 0, scale: 0.8, y: -10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                transition={{ duration: 0.2, delay: index * 0.05 }}
-                className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
-                  filter.label === 'Статус' 
-                    ? showReadyOnly 
-                      ? 'bg-green-500/20 border border-green-500/50' 
-                      : 'bg-yellow-500/20 border border-yellow-500/50'
-                    : 'bg-primary/20 border border-primary/50'
-                }`}
-              >
-                <span className="text-muted-foreground">{filter.label}:</span>
-                <span className={filter.color || 'text-foreground'}>{filter.value}</span>
-                {filter.onRemove && (
-                  <button
-                    onClick={filter.onRemove}
-                    className="ml-1 hover:text-red-400 transition-colors"
-                  >
-                    ×
-                  </button>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          
-          <ChevronDown className="w-4 h-4 text-muted-foreground ml-auto" />
+      <div className={`p-4 bg-black/40 rounded-lg border-2 border-[#2a3142]/50 transition-all duration-500 ${currentHighlight === 'activeFilters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
+        <div 
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => setFiltersExpanded(!filtersExpanded)}
+        >
+          <span className="text-sm font-medium text-foreground">Активные фильтры:</span>
+          <Globe className="w-4 h-4 text-muted-foreground" />
+          <button className="ml-auto p-1 hover:bg-white/10 rounded transition-colors">
+            {filtersExpanded ? (
+              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            )}
+          </button>
         </div>
         
-        {/* Filter description - color block like static tabs */}
-        <motion.div 
-          key={showReadyOnly ? 'ready' : 'warmup'}
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-3 px-4 py-3 rounded-lg bg-[#1a1f2e]/60 border border-[#2a3142]/40"
-        >
-          <span className="inline-block px-3 py-1.5 bg-black/80 rounded-md">
-            <span className="text-sm font-medium text-white">
-              {showReadyOnly 
-                ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
-                : 'Догрев — аккаунты можно использовать для увеличения лимита.'
-              }
-            </span>
-          </span>
-        </motion.div>
+        <AnimatePresence>
+          {filtersExpanded && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {/* Active filter name */}
+              <div className="mt-3 text-sm">
+                <span className={showReadyOnly ? 'text-green-400 font-medium' : 'text-yellow-400 font-medium'}>
+                  {showReadyOnly ? 'Быстрый старт' : 'Догрев'}
+                </span>
+              </div>
+              
+              {/* Separator with description */}
+              <div className="mt-3 py-3 px-4 bg-[#2a3142]/40 rounded-lg border border-[#3a4152]/30">
+                <span className="inline-block px-3 py-1.5 bg-black/60 rounded-md">
+                  <span className="text-sm font-medium text-foreground">
+                    {showReadyOnly 
+                      ? 'Быстрый старт — аккаунты готовые уже к заказу.' 
+                      : 'Догрев — аккаунты можно использовать для увеличения лимита.'
+                    }
+                  </span>
+                </span>
+              </div>
+              
+              {/* Filter tags */}
+              <div className="flex flex-wrap items-center gap-2 mt-3">
+                <AnimatePresence mode="popLayout">
+                  {activeFilters.map((filter, index) => (
+                    <motion.div
+                      key={`${filter.label}-${filter.value}`}
+                      initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.8, y: -10 }}
+                      transition={{ duration: 0.2, delay: index * 0.05 }}
+                      className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
+                        filter.label === 'Статус' 
+                          ? showReadyOnly 
+                            ? 'bg-green-500/20 border border-green-500/50' 
+                            : 'bg-yellow-500/20 border border-yellow-500/50'
+                          : 'bg-primary/20 border border-primary/50'
+                      }`}
+                    >
+                      <span className="text-muted-foreground">{filter.label}:</span>
+                      <span className={filter.color || 'text-foreground'}>{filter.value}</span>
+                      {filter.onRemove && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            filter.onRemove?.();
+                          }}
+                          className="ml-1 hover:text-red-400 transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
 
       {/* Filters */}
-      <div className={`flex flex-wrap items-center gap-4 p-4 bg-[#1a1f2e]/80 border border-[#2a3142]/60 rounded-lg transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
+      <div className={`flex flex-wrap items-center gap-4 p-4 bg-gradient-to-br from-[#1a1f2e]/60 to-[#141820]/40 border-2 border-[#2a3142]/50 rounded-lg transition-all duration-500 ${currentHighlight === 'filters' ? 'ring-2 ring-primary relative z-[110]' : ''}`}>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
           <input
@@ -513,7 +544,7 @@ export const AccountsPage: React.FC = () => {
         </div>
         
         <Select value={selectedCity} onValueChange={setSelectedCity}>
-          <SelectTrigger className="w-48 bg-black/30 border-white/20">
+          <SelectTrigger className="w-48 bg-[#2a3142]/60 border-white/30 text-foreground">
             <SelectValue placeholder="Выберите город" />
           </SelectTrigger>
           <SelectContent className="bg-gray-900 border-gray-700">
@@ -549,9 +580,9 @@ export const AccountsPage: React.FC = () => {
           variant="outline"
           onClick={handleRefresh}
           disabled={isRefreshing}
-          className="border-white/20"
+          className="border-white/30 bg-[#2a3142]/40 hover:bg-[#2a3142]/60"
         >
-          <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`w-4 h-4 text-muted-foreground ${isRefreshing ? 'animate-spin' : ''}`} />
         </Button>
 
         <span className="text-sm text-muted-foreground">
@@ -584,7 +615,7 @@ export const AccountsPage: React.FC = () => {
           return (
             <Card 
               key={account.id}
-              className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-[#1a1f2e]/80 border-[#2a3142]/60 ${
+              className={`cursor-pointer transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] bg-gradient-to-br from-[#1a1f2e]/60 to-[#141820]/40 border-2 border-[#2a3142]/50 ${
                 isSelected 
                   ? 'border-primary ring-2 ring-primary/50' 
                   : ''

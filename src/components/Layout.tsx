@@ -28,7 +28,7 @@ const routeToTab: Record<string, NavItem> = {
 
 const tabTitles: Record<NavItem, string> = {
   home: 'Главная',
-  accounts: 'Аккаунты',
+  accounts: 'Управление аккаунтами',
   order: 'Заказ товара',
   warmup: 'Прогрев',
   emulator: 'Эмулятор управления',

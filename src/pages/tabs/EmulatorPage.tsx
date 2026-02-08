@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GuestOverlay } from '@/components/GuestOverlay';
@@ -26,7 +26,9 @@ export const EmulatorPage: React.FC = () => {
 
   return (
     <div className="relative min-h-full">
-      {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      <AnimatePresence>
+        {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      </AnimatePresence>
 
       <motion.div 
         className="space-y-6"

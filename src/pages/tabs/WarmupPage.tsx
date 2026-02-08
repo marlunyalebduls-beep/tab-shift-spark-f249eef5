@@ -98,7 +98,9 @@ export const WarmupPage: React.FC = () => {
 
   return (
     <div className="relative min-h-full">
-      {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      <AnimatePresence>
+        {user === null && <GuestOverlay onOpenAuth={onOpenAuth} />}
+      </AnimatePresence>
 
       <motion.div 
         className="space-y-6"
