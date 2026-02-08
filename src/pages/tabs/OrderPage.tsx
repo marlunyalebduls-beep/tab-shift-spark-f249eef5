@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GuestOverlay } from '@/components/GuestOverlay';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Package, 
   Link as LinkIcon, 
@@ -22,9 +23,9 @@ import {
 
 interface ParsedProduct {
   title: string;
-  price: number;
+  price: number | null;
   image: string | null;
-  quarterPrice: number;
+  quarterPrice: number | null;
 }
 
 export const OrderPage: React.FC = () => {
@@ -47,38 +48,30 @@ export const OrderPage: React.FC = () => {
     setParsedProduct(null);
 
     try {
-      // Simulate API call - in production this would be a backend call
-      // For demo purposes, we'll parse mock data based on URL patterns
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { data, error } = await supabase.functions.invoke('parse-yandex-market', {
+        body: { url: productUrl },
+      });
 
-      // Extract product ID from URL for demonstration
-      const urlMatch = productUrl.match(/\/product--([^\/]+)\/(\d+)/);
-      const productId = urlMatch ? urlMatch[2] : Math.floor(Math.random() * 100000);
-      
-      // Generate mock product data based on common categories
-      const mockProducts = [
-        { title: 'iPhone 15 Pro 256GB', price: 129990, image: 'https://avatars.mds.yandex.net/get-mpic/1767083/img_id2746399846858377660.jpeg/600x800' },
-        { title: 'MacBook Air M3 13"', price: 159990, image: 'https://avatars.mds.yandex.net/get-mpic/4397647/img_id3915171447658388399.jpeg/600x800' },
-        { title: 'AirPods Pro 2', price: 24990, image: 'https://avatars.mds.yandex.net/get-mpic/1808939/img_id7378890948802573741.jpeg/600x800' },
-        { title: 'Samsung Galaxy S24 Ultra', price: 114990, image: 'https://avatars.mds.yandex.net/get-mpic/5334169/img_id4697999082456787234.jpeg/600x800' },
-        { title: 'PlayStation 5', price: 59990, image: 'https://avatars.mds.yandex.net/get-mpic/4334009/img_id6854725987578147716.jpeg/600x800' },
-      ];
+      if (error) {
+        console.error('Edge function error:', error);
+        setParseError('Ошибка при парсинге. Попробуйте снова.');
+        return;
+      }
 
-      // Select a random product for demo
-      const randomProduct = mockProducts[Math.floor(Math.random() * mockProducts.length)];
-      
-      // Vary price slightly based on "productId" for realism
-      const priceVariation = (parseInt(String(productId)) % 10000) - 5000;
-      const finalPrice = Math.max(10000, randomProduct.price + priceVariation);
-      
+      if (!data.success) {
+        setParseError(data.error || 'Ошибка при парсинге');
+        return;
+      }
+
       setParsedProduct({
-        title: randomProduct.title,
-        price: finalPrice,
-        image: randomProduct.image,
-        quarterPrice: Math.ceil(finalPrice / 4)
+        title: data.product.title,
+        price: data.product.price,
+        image: data.product.image,
+        quarterPrice: data.product.quarterPrice,
       });
 
     } catch (error) {
+      console.error('Parse error:', error);
       setParseError('Ошибка при парсинге. Попробуйте снова.');
     } finally {
       setIsParsing(false);
